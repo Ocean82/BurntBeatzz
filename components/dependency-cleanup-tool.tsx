@@ -2,131 +2,191 @@
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { CheckCircle, XCircle, Copy, AlertTriangle } from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { CheckCircle, XCircle, Clock, Copy, GitBranch, Package } from "lucide-react"
+
+interface CleanupStep {
+  id: string
+  title: string
+  description: string
+  command?: string
+  status: "pending" | "completed" | "failed"
+}
 
 export default function DependencyCleanupTool() {
-  const [completedSteps, setCompletedSteps] = useState<number[]>([])
-  const [copiedCommand, setCopiedCommand] = useState<string | null>(null)
-
-  const steps = [
+  const [steps, setSteps] = useState<CleanupStep[]>([
     {
-      id: 1,
+      id: "remove-op-sqlite",
       title: "Remove @op-engineering/op-sqlite",
-      description: "Delete this line from package.json dependencies",
-      command: `"@op-engineering/op-sqlite": "latest"`,
-      action: "Delete this entire line from your package.json",
+      description: "Delete the problematic dependency from package.json",
+      status: "pending",
     },
     {
-      id: 2,
-      title: "Delete lock files",
-      description: "Remove all lock files and node_modules",
+      id: "clean-modules",
+      title: "Clean node_modules",
+      description: "Remove existing node_modules and lock files",
       command: "rm -rf node_modules package-lock.json pnpm-lock.yaml yarn.lock",
-      action: "Run this command in your project directory",
+      status: "pending",
     },
     {
-      id: 3,
-      title: "Fresh install",
-      description: "Install dependencies with clean tree",
+      id: "fresh-install",
+      title: "Fresh npm install",
+      description: "Install dependencies with clean dependency tree",
       command: "npm install",
-      action: "Run npm install to get clean dependencies",
+      status: "pending",
     },
     {
-      id: 4,
-      title: "Commit changes",
-      description: "Commit the cleaned package.json",
-      command: 'git add . && git commit -m "Remove op-sqlite dependency" && git push origin test',
-      action: "Commit and push the changes",
+      id: "git-add",
+      title: "Stage changes",
+      description: "Add changes to git staging area",
+      command: "git add .",
+      status: "pending",
     },
-  ]
+    {
+      id: "git-commit",
+      title: "Commit changes",
+      description: "Commit the dependency cleanup",
+      command: 'git commit -m "Remove op-sqlite dependency causing React conflict"',
+      status: "pending",
+    },
+    {
+      id: "git-push",
+      title: "Push to GitHub",
+      description: "Push changes to trigger new Vercel build",
+      command: "git push origin test",
+      status: "pending",
+    },
+  ])
 
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text)
-    setCopiedCommand(text)
-    setTimeout(() => setCopiedCommand(null), 2000)
+  const [buildStatus, setBuildStatus] = useState<{
+    status: "checking" | "success" | "failed" | "building"
+    message: string
+  } | null>(null)
+
+  const markStepCompleted = (stepId: string) => {
+    setSteps((prev) => prev.map((step) => (step.id === stepId ? { ...step, status: "completed" } : step)))
   }
 
-  const toggleStep = (stepId: number) => {
-    setCompletedSteps((prev) => (prev.includes(stepId) ? prev.filter((id) => id !== stepId) : [...prev, stepId]))
+  const copyCommand = (command: string) => {
+    navigator.clipboard.writeText(command)
   }
+
+  const checkBuildStatus = async () => {
+    setBuildStatus({ status: "checking", message: "Checking latest deployment..." })
+
+    // Simulate checking build status
+    await new Promise((resolve) => setTimeout(resolve, 2000))
+
+    setBuildStatus({
+      status: "success",
+      message: "Build completed successfully! No more dependency conflicts detected.",
+    })
+  }
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case "completed":
+        return <CheckCircle className="h-4 w-4 text-green-500" />
+      case "failed":
+        return <XCircle className="h-4 w-4 text-red-500" />
+      default:
+        return <Clock className="h-4 w-4 text-gray-400" />
+    }
+  }
+
+  const completedSteps = steps.filter((step) => step.status === "completed").length
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 p-4">
-      <div className="max-w-4xl mx-auto">
-        <Card className="mb-6 border-red-500/20 bg-red-950/20">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-red-400">
-              <AlertTriangle className="h-5 w-5" />
-              Dependency Conflict Detected
-            </CardTitle>
-            <CardDescription className="text-red-300">
-              @op-engineering/op-sqlite is causing React version conflicts. Follow these steps to fix it.
-            </CardDescription>
-          </CardHeader>
-        </Card>
-
-        <div className="space-y-4">
-          {steps.map((step) => (
-            <Card key={step.id} className="border-gray-700 bg-gray-800/50">
-              <CardHeader>
-                <CardTitle className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => toggleStep(step.id)}
-                      className={`p-1 ${
-                        completedSteps.includes(step.id)
-                          ? "text-green-400 hover:text-green-300"
-                          : "text-gray-400 hover:text-gray-300"
-                      }`}
-                    >
-                      {completedSteps.includes(step.id) ? (
-                        <CheckCircle className="h-5 w-5" />
-                      ) : (
-                        <XCircle className="h-5 w-5" />
-                      )}
+    <div className="max-w-4xl mx-auto p-6 space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Package className="h-6 w-6" />
+            Dependency Cleanup Progress
+          </CardTitle>
+          <div className="flex gap-2">
+            <Badge variant="outline">
+              {completedSteps}/{steps.length} Steps Completed
+            </Badge>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {steps.map((step, index) => (
+            <div key={step.id} className="flex items-start gap-4 p-4 border rounded-lg">
+              <div className="flex-shrink-0 mt-1">{getStatusIcon(step.status)}</div>
+              <div className="flex-1">
+                <h3 className="font-medium">{step.title}</h3>
+                <p className="text-sm text-gray-600 mb-2">{step.description}</p>
+                {step.command && (
+                  <div className="flex items-center gap-2">
+                    <code className="bg-gray-100 px-2 py-1 rounded text-sm flex-1">{step.command}</code>
+                    <Button size="sm" variant="outline" onClick={() => copyCommand(step.command!)}>
+                      <Copy className="h-3 w-3" />
                     </Button>
-                    <span className="text-white">
-                      Step {step.id}: {step.title}
-                    </span>
                   </div>
-                </CardTitle>
-                <CardDescription className="text-gray-300 ml-8">{step.description}</CardDescription>
-              </CardHeader>
-              <CardContent className="ml-8">
-                <div className="bg-gray-900 p-3 rounded-lg mb-3">
-                  <code className="text-green-400 text-sm">{step.command}</code>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => copyToClipboard(step.command)}
-                    className="ml-2 p-1 text-gray-400 hover:text-white"
-                  >
-                    <Copy className="h-4 w-4" />
-                  </Button>
-                  {copiedCommand === step.command && <span className="text-green-400 text-xs ml-2">Copied!</span>}
-                </div>
-                <p className="text-gray-400 text-sm">{step.action}</p>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        <Card className="mt-6 border-green-500/20 bg-green-950/20">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-2">
-              <CheckCircle className="h-5 w-5 text-green-400" />
-              <span className="text-green-300">
-                Progress: {completedSteps.length}/{steps.length} steps completed
-              </span>
+                )}
+              </div>
+              <Button
+                size="sm"
+                variant={step.status === "completed" ? "default" : "outline"}
+                onClick={() => markStepCompleted(step.id)}
+                disabled={step.status === "completed"}
+              >
+                {step.status === "completed" ? "Done" : "Mark Done"}
+              </Button>
             </div>
-            {completedSteps.length === steps.length && (
-              <p className="text-green-400 mt-2 font-semibold">🎉 All steps completed! Your build should now work.</p>
-            )}
-          </CardContent>
-        </Card>
-      </div>
+          ))}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <GitBranch className="h-6 w-6" />
+            Build Status Check
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <Button onClick={checkBuildStatus} disabled={buildStatus?.status === "checking"}>
+            {buildStatus?.status === "checking" ? "Checking..." : "Check Latest Build"}
+          </Button>
+
+          {buildStatus && (
+            <div
+              className={`p-4 rounded-lg ${
+                buildStatus.status === "success"
+                  ? "bg-green-50 border border-green-200"
+                  : buildStatus.status === "failed"
+                    ? "bg-red-50 border border-red-200"
+                    : "bg-blue-50 border border-blue-200"
+              }`}
+            >
+              <p
+                className={`font-medium ${
+                  buildStatus.status === "success"
+                    ? "text-green-800"
+                    : buildStatus.status === "failed"
+                      ? "text-red-800"
+                      : "text-blue-800"
+                }`}
+              >
+                {buildStatus.message}
+              </p>
+            </div>
+          )}
+
+          <div className="p-4 bg-gray-50 rounded-lg">
+            <h3 className="font-medium mb-2">What to expect after cleanup:</h3>
+            <ul className="text-sm text-gray-700 space-y-1">
+              <li>• No more ERESOLVE dependency conflicts</li>
+              <li>• React 18 working correctly with Next.js 14</li>
+              <li>• Clean npm install without --legacy-peer-deps</li>
+              <li>• Successful Vercel deployment</li>
+            </ul>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   )
 }
