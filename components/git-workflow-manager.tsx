@@ -45,6 +45,11 @@ interface RemoteRepository {
 
 export function GitWorkflowManager() {
   const [repositoryUrl, setRepositoryUrl] = useState("https://github.com/Ocean82/BurntBeatzz.git")
+  const [alternativeUrls, setAlternativeUrls] = useState([
+    "https://github.com/Ocean82/BurntBeatzz",
+    "https://github.com/Ocean82/BurntBeats",
+    "https://github.com/Ocean82/Burnt-Beats",
+  ])
   const [commitMessage, setCommitMessage] = useState("")
   const [targetBranch, setTargetBranch] = useState("main")
   const [currentBranch, setCurrentBranch] = useState("test")
@@ -81,28 +86,51 @@ export function GitWorkflowManager() {
     addToLog("Checking repository accessibility...")
 
     try {
-      // Check if repository exists and is accessible
-      const response = await fetch("/api/github/validate-repository", {
+      // First try the main URL
+      let response = await fetch("/api/github/validate-repository", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url: repositoryUrl }),
       })
 
-      const data = await response.json()
+      let data = await response.json()
+
+      // If main URL fails, try alternatives
+      if (!data.accessible && alternativeUrls.length > 0) {
+        addToLog("Main URL not accessible, trying alternative URLs...")
+
+        for (const altUrl of alternativeUrls) {
+          addToLog(`Trying: ${altUrl}`)
+          response = await fetch("/api/github/validate-repository", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ url: altUrl }),
+          })
+
+          data = await response.json()
+
+          if (data.accessible) {
+            addToLog(`✅ Found accessible repository: ${altUrl}`)
+            setRepositoryUrl(altUrl)
+            break
+          }
+        }
+      }
 
       setRemoteStatus({
         name: "origin",
-        url: repositoryUrl,
+        url: data.accessible ? (data.fullName ? `https://github.com/${data.fullName}` : repositoryUrl) : repositoryUrl,
         accessible: data.accessible || false,
         exists: data.exists || false,
         private: data.private || false,
       })
 
       if (!data.accessible) {
-        addToLog("❌ Repository not accessible - may be private or not exist")
-        toast.error("Repository not accessible")
+        addToLog("❌ Repository not accessible - checking if recently made public...")
+        addToLog("💡 If repository was just made public, try again in a few minutes")
+        toast.error("Repository not accessible - may need time to propagate if recently made public")
       } else {
-        addToLog("✅ Repository is accessible")
+        addToLog("✅ Repository is accessible and ready for Git operations")
         toast.success("Repository found and accessible")
       }
     } catch (error) {
@@ -408,22 +436,40 @@ export function GitWorkflowManager() {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex items-center gap-3">
-            {getRepositoryStatusIcon()}
-            <div className="flex-1">
-              <p className="font-medium">{remoteStatus.url}</p>
-              <p className="text-sm text-muted-foreground">
-                {!remoteStatus.accessible
-                  ? "Repository not accessible (404 error - may be private or not exist)"
-                  : remoteStatus.private
-                    ? "Private repository - authentication required"
-                    : "Public repository - accessible"}
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="repo-url">Repository URL</Label>
+              <div className="flex gap-2">
+                <Input
+                  id="repo-url"
+                  value={repositoryUrl}
+                  onChange={(e) => setRepositoryUrl(e.target.value)}
+                  placeholder="https://github.com/owner/repo.git"
+                  className="flex-1"
+                />
+                <Button variant="outline" onClick={checkRepositoryStatus} disabled={isLoading}>
+                  <RefreshCw className="h-4 w-4 mr-2" />
+                  Check
+                </Button>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                If repository was recently made public, it may take a few minutes to be accessible
               </p>
             </div>
-            <Button variant="outline" onClick={checkRepositoryStatus} disabled={isLoading}>
-              <RefreshCw className="h-4 w-4 mr-2" />
-              Check
-            </Button>
+
+            <div className="flex items-center gap-3">
+              {getRepositoryStatusIcon()}
+              <div className="flex-1">
+                <p className="font-medium">{remoteStatus.url}</p>
+                <p className="text-sm text-muted-foreground">
+                  {!remoteStatus.accessible
+                    ? "Repository not accessible - may be private, not exist, or recently made public"
+                    : remoteStatus.private
+                      ? "Private repository - authentication required"
+                      : "Public repository - accessible"}
+                </p>
+              </div>
+            </div>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
