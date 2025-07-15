@@ -1,6 +1,7 @@
 "use client"
 
 import type React from "react"
+<<<<<<< HEAD
 import { useEffect, useState } from "react"
 import {
   Button,
@@ -92,6 +93,22 @@ const menuItems = [
     description: "Manage your files",
   },
 ]
+=======
+
+import { useState, useEffect } from "react"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Switch } from "@/components/ui/switch"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Mic, Share2, Heart, Eye, EyeOff, Music, Edit3 } from "lucide-react"
+import MusicDiscovery from "@/components/music-discovery"
+import SongEditor from "@/components/song-editor"
+import VoiceCloningAdvanced from "@/components/voice-cloning-advanced"
+>>>>>>> ac05bde066e7c465bf6cf291993fec9ae72ff6fd
 
 export default function BurntBeatsApp() {
   const [selectedLogo, setSelectedLogo] = useState("/logos/demon-logo.jpeg")
@@ -100,6 +117,10 @@ export default function BurntBeatsApp() {
   const [isLogin, setIsLogin] = useState(true)
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+<<<<<<< HEAD
+=======
+  const [currentPage, setCurrentPage] = useState("create") // "create" or "discover"
+>>>>>>> ac05bde066e7c465bf6cf291993fec9ae72ff6fd
   const [loginForm, setLoginForm] = useState({ email: "", password: "" })
   const [registerForm, setRegisterForm] = useState({
     username: "",
@@ -109,6 +130,7 @@ export default function BurntBeatsApp() {
   })
 
   // Music generation states
+<<<<<<< HEAD
   const [songData, setSongData] = useState({
     title: "",
     lyrics: "",
@@ -149,6 +171,15 @@ export default function BurntBeatsApp() {
     { id: "voice_public_3", name: "Versatile Voice", isPublic: true, audioUrl: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/audio%20VM%20for%20BB-e0JfvAP82p7pTkU6IkedDbiqkgNKc2.mp3" },
   ])
 
+=======
+  const [lyrics, setLyrics] = useState("")
+  const [isGenerating, setIsGenerating] = useState(false)
+  const [tempo, setTempo] = useState([120])
+  const [duration, setDuration] = useState([180])
+  const [isPlaying, setIsPlaying] = useState(false)
+  const [isSimpleMode, setIsSimpleMode] = useState(true)
+
+>>>>>>> ac05bde066e7c465bf6cf291993fec9ae72ff6fd
   // Advanced features states
   const [totalFileSize, setTotalFileSize] = useState(0)
   const [exportFormat, setExportFormat] = useState("mp3")
@@ -164,7 +195,11 @@ export default function BurntBeatsApp() {
     melody: { volume: 85, muted: false },
   })
 
+<<<<<<< HEAD
   const { toast } = useToast()
+=======
+  const [editingSong, setEditingSong] = useState<any>(null)
+>>>>>>> ac05bde066e7c465bf6cf291993fec9ae72ff6fd
 
   // Sassy AI responses
   const sassyResponses = [
@@ -181,11 +216,20 @@ export default function BurntBeatsApp() {
   ]
 
   // Mock file sizes for generated tracks
+<<<<<<< HEAD
   const [generatedTracks, setGeneratedTracks] = useState([
     { id: 1, title: "Burnt Nights", size: 4.2, duration: "3:24", audioUrl: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/audio%20sample%20BB1-H1FFSxbomW3iCfaAgmk0Hg37VA8KUb.mp3" },
     { id: 2, title: "Fire Dreams", size: 5.8, duration: "3:45", audioUrl: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Audion%20Sample%20BB2-sKRqesjrFVwnjY2IpduXNVzw8o0R5A.mp3" },
     { id: 3, title: "Inferno Vibes", size: 3.9, duration: "2:58", audioUrl: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/audio%20VM%20for%20BB-e0JfvAP82p7pTkU6IkedDbiqkgNKc2.mp3" },
   ])
+=======
+  const mockFileSizes = {
+    "Burnt Nights": 4.2,
+    "Fire Dreams": 5.8,
+    "Inferno Vibes": 3.9,
+    "Blazing Bars": 4.7,
+  }
+>>>>>>> ac05bde066e7c465bf6cf291993fec9ae72ff6fd
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault()
@@ -213,6 +257,7 @@ export default function BurntBeatsApp() {
     setAiMessages((prev) => [...prev, newMessage])
   }
 
+<<<<<<< HEAD
   // Voice recording functions
   const startRecording = async () => {
     try {
@@ -431,6 +476,20 @@ export default function BurntBeatsApp() {
         description: `${file.name} ready for voice cloning`,
       })
     }
+=======
+  // Update the handleGenerate function to include file size calculation
+  const handleGenerate = () => {
+    setIsGenerating(true)
+    setTimeout(() => {
+      setIsGenerating(false)
+      // Simulate adding file size
+      const newSize = Math.random() * 3 + 2 // Random size between 2-5 MB
+      setTotalFileSize((prev) => prev + newSize)
+
+      // Add sassy comment about generation
+      addSassyComment()
+    }, 3000)
+>>>>>>> ac05bde066e7c465bf6cf291993fec9ae72ff6fd
   }
 
   const genres = [
@@ -503,16 +562,22 @@ export default function BurntBeatsApp() {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault()
+<<<<<<< HEAD
     setIsLoggedIn(true)
     toast({
       title: "Welcome to Burnt Beats!",
       description: "Ready to create some fire tracks?",
     })
+=======
+    // Simulate login
+    setIsLoggedIn(true)
+>>>>>>> ac05bde066e7c465bf6cf291993fec9ae72ff6fd
   }
 
   const handleRegister = (e: React.FormEvent) => {
     e.preventDefault()
     if (registerForm.password !== registerForm.confirmPassword) {
+<<<<<<< HEAD
       toast({
         title: "Password Mismatch",
         description: "Passwords don't match!",
@@ -530,6 +595,15 @@ export default function BurntBeatsApp() {
   const { currentContent, setActiveMenuItem, activeMenuItem } = useMainContent()
   const [isMenuCollapsed, setIsMenuCollapsed] = useState(false)
 
+=======
+      alert("Passwords don't match!")
+      return
+    }
+    // Simulate registration
+    setIsLoggedIn(true)
+  }
+
+>>>>>>> ac05bde066e7c465bf6cf291993fec9ae72ff6fd
   // Login/Register Screen
   if (!isLoggedIn) {
     return (
@@ -590,7 +664,11 @@ export default function BurntBeatsApp() {
                         placeholder="Enter your password"
                         value={loginForm.password}
                         onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })}
+<<<<<<< HEAD
                         className="bg-black/60 border-green-500/30 text-green-100 placeholder:text-green-400/60 focus:border-green-400 focus:ring-green-400/20 pr-10"
+=======
+                        className="bg-black/60 border-green-500/30 text-green-100 placeholder:text-green-400/60 resize-none focus:border-green-400 focus:ring-green-400/20 pr-10"
+>>>>>>> ac05bde066e7c465bf6cf291993fec9ae72ff6fd
                         required
                       />
                       <Button
@@ -695,9 +773,12 @@ export default function BurntBeatsApp() {
               <p className="text-green-400/60 text-sm">
                 By signing up, you agree to our Terms of Service and Privacy Policy
               </p>
+<<<<<<< HEAD
               <p className="text-green-400/60 text-xs mt-2">
                 Pay only for what you download • No subscriptions required
               </p>
+=======
+>>>>>>> ac05bde066e7c465bf6cf291993fec9ae72ff6fd
             </div>
           </CardContent>
         </Card>
@@ -705,6 +786,7 @@ export default function BurntBeatsApp() {
     )
   }
 
+<<<<<<< HEAD
   // ─────────────────────────────────────────────────────────────────────
   //  MAIN APP
   // ─────────────────────────────────────────────────────────────────────
@@ -795,6 +877,363 @@ export default function BurntBeatsApp() {
               {/* Dynamic Content */}
               <div className="min-h-[600px]">{currentContent}</div>
             </div>
+=======
+  // Show Music Discovery page
+  if (currentPage === "discover") {
+    return <MusicDiscovery />
+  }
+
+  // Main Music Generation Interface
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-green-900">
+      <div className="container mx-auto px-4 py-8">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <div
+                className="w-10 h-10 rounded-lg overflow-hidden cursor-pointer hover:ring-2 hover:ring-green-400 hover:shadow-lg hover:shadow-green-400/50 transition-all"
+                onClick={() => setShowLogoSelector(!showLogoSelector)}
+              >
+                <img
+                  src={selectedLogo || "/placeholder.svg"}
+                  alt="Burnt Beats Logo"
+                  className="w-full h-full object-cover rounded-lg"
+                />
+              </div>
+
+              {showLogoSelector && (
+                <div className="logo-selector absolute top-12 left-0 bg-black/90 backdrop-blur-sm border border-green-500/30 rounded-lg p-4 z-50 min-w-[300px] shadow-2xl shadow-green-500/20">
+                  <h3 className="text-green-300 font-semibold mb-3">Choose Your Logo</h3>
+                  <div className="grid grid-cols-3 gap-3">
+                    {logoOptions.map((logo) => (
+                      <div
+                        key={logo.id}
+                        className={`cursor-pointer rounded-lg overflow-hidden border-2 transition-all ${
+                          selectedLogo === logo.src
+                            ? "border-green-400 ring-2 ring-green-400/50 shadow-lg shadow-green-400/30"
+                            : "border-transparent hover:border-green-400/50"
+                        }`}
+                        onClick={() => {
+                          setSelectedLogo(logo.src)
+                          setShowLogoSelector(false)
+                        }}
+                      >
+                        <img
+                          src={logo.src || "/placeholder.svg"}
+                          alt={logo.name}
+                          className="w-full h-16 object-cover"
+                        />
+                        <div className="p-1 bg-black/80">
+                          <p className="text-xs text-green-300 text-center truncate">{logo.name}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-orange-400 via-red-400 to-green-400 bg-clip-text text-transparent">
+              Burnt Beats
+            </h1>
+          </div>
+          <div className="flex items-center gap-4">
+            <Button
+              onClick={() => setCurrentPage("discover")}
+              className="relative overflow-hidden bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 hover:from-purple-700 hover:via-pink-600 hover:to-red-600 text-white font-bold shadow-lg shadow-pink-500/50 animate-pulse border-2 border-pink-400/50"
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"></div>
+              <Music className="w-4 h-4 mr-2 animate-bounce" />🏆 ENTER THE ARENA 🏆
+            </Button>
+            <div className="text-green-300/80 text-sm">
+              Total: <span className="font-bold text-green-400 glow-text">{totalFileSize.toFixed(1)} MB</span>
+            </div>
+            <Button
+              variant="outline"
+              className="text-green-300 border-green-500/30 bg-black/40 hover:bg-green-500/10 hover:border-green-400"
+            >
+              <Share2 className="w-4 h-4 mr-2" />
+              Share
+            </Button>
+            <Button
+              variant="outline"
+              className="text-green-300 border-green-500/30 bg-black/40 hover:bg-green-500/10 hover:border-green-400"
+            >
+              <Heart className="w-4 h-4 mr-2" />
+              Save
+            </Button>
+            <Button
+              variant="outline"
+              className="text-green-300 border-green-500/30 bg-black/40 hover:bg-green-500/10 hover:border-green-400"
+              onClick={() => setIsLoggedIn(false)}
+            >
+              Logout
+            </Button>
+          </div>
+        </div>
+
+        {/* Simple/Custom Mode Toggle */}
+        <div className="flex items-center justify-end mb-4">
+          <Label htmlFor="simple-mode" className="text-green-300 mr-2">
+            Simple Mode
+          </Label>
+          <Switch id="simple-mode" checked={isSimpleMode} onCheckedChange={setIsSimpleMode} />
+        </div>
+
+        <div className="grid lg:grid-cols-3 gap-8">
+          {/* Main Input Section */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Sassy AI Assistant */}
+            <Card className="bg-black/80 backdrop-blur-sm border border-green-500/30 shadow-2xl shadow-green-500/20">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-green-300 flex items-center gap-2 text-lg">
+                    <span className="animate-pulse">🤖</span>
+                    <span className="bg-gradient-to-r from-red-400 via-orange-400 to-green-400 bg-clip-text text-transparent">
+                      AI ROAST MASTER
+                    </span>
+                    <span className="animate-pulse">🔥</span>
+                  </CardTitle>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setShowAI(!showAI)}
+                    className="text-green-300 hover:text-green-100"
+                  >
+                    {showAI ? "Hide" : "Show"}
+                  </Button>
+                </div>
+              </CardHeader>
+              {showAI && (
+                <CardContent>
+                  <div className="space-y-3 max-h-96 overflow-y-auto">
+                    {aiMessages.map((message, index) => (
+                      <div
+                        key={index}
+                        className="bg-gradient-to-r from-red-900/40 via-black/60 to-green-900/40 border border-green-500/20 rounded-lg p-3 shadow-lg"
+                      >
+                        <p className="text-green-100 text-sm italic">{message}</p>
+                      </div>
+                    ))}
+                  </div>
+                  <Button
+                    onClick={addSassyComment}
+                    className="w-full mt-4 bg-gradient-to-r from-red-500 via-orange-500 to-green-500 hover:from-red-600 hover:via-orange-600 hover:to-green-600 text-white font-semibold shadow-lg shadow-green-500/30"
+                  >
+                    Roast Me Again 🔥💀
+                  </Button>
+                </CardContent>
+              )}
+            </Card>
+
+            <Card className="bg-black/80 backdrop-blur-sm border border-green-500/30 shadow-xl shadow-green-500/10">
+              <CardHeader>
+                <CardTitle className="text-green-300 flex items-center gap-2">
+                  <Mic className="w-5 h-5 text-orange-400" />
+                  Create Your Fire Track
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <Tabs defaultValue="lyrics" className="w-full">
+                  <TabsList className="grid w-full grid-cols-2 bg-black/60 border border-green-500/20">
+                    <TabsTrigger
+                      value="lyrics"
+                      className="text-green-300 data-[state=active]:bg-green-500/30 data-[state=active]:text-white"
+                    >
+                      Write Lyrics
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="description"
+                      className="text-green-300 data-[state=active]:bg-green-500/30 data-[state=active]:text-white"
+                    >
+                      Describe Song
+                    </TabsTrigger>
+                  </TabsList>
+
+                  <TabsContent value="lyrics" className="space-y-4">
+                    <div>
+                      <Label className="text-green-300 mb-2 block">Song Lyrics</Label>
+                      <Textarea
+                        placeholder="Enter your fire lyrics here... 
+                      
+[Verse 1]
+Burning up the night with these beats so hot
+Every single bar hits like a lightning shot
+...
+
+[Chorus]
+These burnt beats got me feeling alive
+..."
+                        value={lyrics}
+                        onChange={(e) => setLyrics(e.target.value)}
+                        className="min-h-[200px] bg-black/60 border-green-500/30 text-green-100 placeholder:text-green-400/60 resize-none focus:border-green-400 focus:ring-green-400/20"
+                      />
+                    </div>
+                  </TabsContent>
+
+                  <TabsContent value="description" className="space-y-4">
+                    <div>
+                      <Label className="text-green-300 mb-2 block">Song Description</Label>
+                      <Textarea
+                        placeholder="Describe the fire track you want to create...
+
+Example: 'A hard-hitting hip-hop track with heavy bass and aggressive vocals about overcoming challenges'"
+                        className="min-h-[200px] bg-black/60 border-green-500/30 text-green-100 placeholder:text-green-400/60 resize-none focus:border-green-400 focus:ring-green-400/20"
+                      />
+                    </div>
+                  </TabsContent>
+                </Tabs>
+
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-green-300 mb-2 block">Track Title</Label>
+                    <Input
+                      placeholder="Enter track title..."
+                      className="bg-black/60 border-green-500/30 text-green-100 placeholder:text-green-400/60 focus:border-green-400 focus:ring-green-400/20"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-green-300 mb-2 block">Artist Name</Label>
+                    <Input
+                      placeholder="Enter artist name..."
+                      className="bg-black/60 border-green-500/30 text-green-100 placeholder:text-green-400/60 focus:border-green-400 focus:ring-green-400/20"
+                    />
+                  </div>
+                </div>
+                <Button
+                  onClick={() =>
+                    setEditingSong({
+                      id: 1,
+                      title: "Test Song",
+                      lyrics: "This is a test song\nWith multiple lines\nFor editing",
+                      genre: "pop",
+                      vocalStyle: "smooth",
+                      songLength: "3:30",
+                    })
+                  }
+                  className="w-full bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 hover:from-purple-600 hover:via-pink-600 hover:to-red-600 text-white font-semibold shadow-lg shadow-pink-500/30"
+                >
+                  <Edit3 className="w-4 h-4 mr-2" />🎵 Test Song Editor
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Drag & Drop Editor */}
+            <Card className="bg-black/80 backdrop-blur-sm border border-green-500/30 shadow-xl shadow-green-500/10">
+              <CardHeader>
+                <CardTitle className="text-green-300">Track Editor</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div
+                  className={`border-2 border-dashed rounded-lg p-8 text-center transition-all ${
+                    isDragOver
+                      ? "border-green-400 bg-green-500/10 shadow-lg shadow-green-400/30"
+                      : "border-green-500/30 hover:border-green-400/50"
+                  }`}
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
+                >
+                  <div className="text-green-400/60 mb-4">
+                    <svg className="w-12 h-12 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                      />
+                    </svg>
+                    <p className="text-lg text-green-300">Drop your tracks here to edit</p>
+                    <p className="text-sm">Supports MP3, WAV, FLAC, and more</p>
+                  </div>
+
+                  {draggedFiles.length > 0 && (
+                    <div className="space-y-2">
+                      <p className="text-green-400 font-semibold">Loaded Files:</p>
+                      {draggedFiles.map((file, index) => (
+                        <div
+                          key={index}
+                          className="bg-black/60 border border-green-500/20 rounded p-2 text-green-100 text-sm"
+                        >
+                          {file}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Waveform Visualization */}
+                <div className="mt-6">
+                  <Label className="text-green-300 mb-2 block">Waveform Preview</Label>
+                  <div className="bg-black/80 border border-green-500/20 rounded-lg p-4 h-24 flex items-end justify-center gap-1">
+                    {Array.from({ length: 50 }, (_, i) => (
+                      <div
+                        key={i}
+                        className="bg-gradient-to-t from-green-500 via-orange-500 to-red-500 rounded-sm shadow-sm shadow-green-500/30"
+                        style={{
+                          height: `${Math.random() * 80 + 10}%`,
+                          width: "3px",
+                          opacity: 0.7 + Math.random() * 0.3,
+                        }}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Voice Synthesis */}
+            <Card className="bg-black/80 backdrop-blur-sm border border-green-500/30 shadow-xl shadow-green-500/10">
+              <CardHeader>
+                <CardTitle className="text-green-300">Voice Synthesis</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-green-300 mb-2 block">Voice Type</Label>
+                    <Select>
+                      <SelectTrigger className="bg-black/60 border-green-500/30 text-green-100 focus:border-green-400 focus:ring-green-400/20">
+                        <SelectValue placeholder="Select voice type" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-black/90 border-green-500/30">
+                        {voiceTypes.map((voice) => (
+                          <SelectItem
+                            key={voice}
+                            value={voice.toLowerCase()}
+                            className="text-green-100 focus:bg-green-500/20"
+                          >
+                            {voice}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label className="text-green-300 mb-2 block">Voice Clone</Label>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            {/* Song Editor */}
+            {editingSong && (
+              <SongEditor
+                song={editingSong}
+                userPlan={isLoggedIn ? "basic" : "free"}
+                onSongUpdated={(updatedSong) => {
+                  setEditingSong(updatedSong)
+                  addSassyComment()
+                }}
+                onUpgrade={() => alert("Upgrade to unlock advanced editing!")}
+              />
+            )}
+
+            {/* Voice Cloning */}
+            <VoiceCloningAdvanced
+              userId={1}
+              userPlan={isLoggedIn ? "basic" : "free"}
+              onUpgrade={() => alert("Upgrade to unlock advanced voice cloning!")}
+            />
+>>>>>>> ac05bde066e7c465bf6cf291993fec9ae72ff6fd
           </div>
         </div>
       </div>

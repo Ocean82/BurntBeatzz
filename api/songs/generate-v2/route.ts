@@ -1,15 +1,28 @@
 import { type NextRequest, NextResponse } from "next/server"
+<<<<<<< HEAD
 import { AudioSynthesisService } from "@/lib/services/audio-synthesis-service"
 import { VocalSynthesisService } from "@/lib/services/vocal-synthesis-service"
 
 export async function POST(request: NextRequest) {
   try {
+=======
+import { AIMusicServiceV2 } from "@/lib/services/ai-music-service-v2"
+import { cloudStorage } from "@/lib/services/google-cloud-storage"
+import { requireAuth } from "@/lib/auth/stack-auth"
+
+export async function POST(request: NextRequest) {
+  try {
+    // Authenticate user
+    const user = await requireAuth(request)
+
+>>>>>>> ac05bde066e7c465bf6cf291993fec9ae72ff6fd
     const { songData } = await request.json()
 
     if (!songData) {
       return NextResponse.json({ error: "Song data is required" }, { status: 400 })
     }
 
+<<<<<<< HEAD
     // Validate required fields
     const requiredFields = ["title", "lyrics", "genre", "tempo"]
     for (const field of requiredFields) {
@@ -72,6 +85,41 @@ export async function POST(request: NextRequest) {
     const song = {
       id: songId,
       userId: songData.userId || "anonymous",
+=======
+    // Generate music with real AI
+    const generationResult = await AIMusicServiceV2.generateMusic({
+      lyrics: songData.lyrics,
+      genre: songData.genre,
+      style: songData.vocalStyle,
+      tempo: songData.tempo,
+      duration: songData.songLength,
+      voiceId: songData.voiceId,
+      title: songData.title,
+      userId: user.id,
+      provider: songData.provider || "suno",
+    })
+
+    const songId = `song_${user.id}_${Date.now()}`
+
+    // Upload different quality versions to Google Cloud
+    const qualityVersions = await cloudStorage.uploadMultipleQualities(
+      generationResult.audioBuffer,
+      user.id,
+      songId,
+      songData.title || "untitled",
+    )
+
+    // Upload stems if available
+    let stems = {}
+    if (generationResult.stems) {
+      stems = await cloudStorage.uploadSongStems(generationResult.stems, user.id, songId)
+    }
+
+    // Create song record
+    const song = {
+      id: songId,
+      userId: user.id,
+>>>>>>> ac05bde066e7c465bf6cf291993fec9ae72ff6fd
       title: songData.title,
       lyrics: songData.lyrics,
       genre: songData.genre,
@@ -80,6 +128,7 @@ export async function POST(request: NextRequest) {
       songLength: songData.songLength,
       voiceId: songData.voiceId,
       status: "completed",
+<<<<<<< HEAD
       audioUrl: qualityVersions.standard.url,
       qualityVersions,
       vocalInfo,
@@ -92,18 +141,34 @@ export async function POST(request: NextRequest) {
         generatedAt: new Date().toISOString(),
       },
       fileSizeMB,
+=======
+      generatedAudioPath: qualityVersions.standard.publicUrl,
+      qualityVersions,
+      stems,
+      metadata: generationResult.metadata,
+      fileSizeMB: generationResult.audioBuffer.length / (1024 * 1024),
+>>>>>>> ac05bde066e7c465bf6cf291993fec9ae72ff6fd
       createdAt: new Date(),
       updatedAt: new Date(),
     }
 
+<<<<<<< HEAD
     console.log(`✅ Song generation completed: ${songData.title}`)
+=======
+    // TODO: Save to database
+    // await saveSongToDatabase(song)
+>>>>>>> ac05bde066e7c465bf6cf291993fec9ae72ff6fd
 
     return NextResponse.json({
       success: true,
       song,
+<<<<<<< HEAD
       message: `🔥 Song "${songData.title}" generated successfully!`,
       downloadUrl: qualityVersions.standard.url,
       previewUrl: qualityVersions.demo.url,
+=======
+      message: `🔥 Song generated with ${generationResult.metadata.provider}!`,
+>>>>>>> ac05bde066e7c465bf6cf291993fec9ae72ff6fd
     })
   } catch (error) {
     console.error("Song generation error:", error)
@@ -116,6 +181,7 @@ export async function POST(request: NextRequest) {
     )
   }
 }
+<<<<<<< HEAD
 
 export async function GET(request: NextRequest) {
   try {
@@ -193,3 +259,5 @@ async function generateQualityVersions(audioBuffer: Buffer, songId: string) {
     },
   }
 }
+=======
+>>>>>>> ac05bde066e7c465bf6cf291993fec9ae72ff6fd

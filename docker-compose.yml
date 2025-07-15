@@ -7,6 +7,7 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=production
+<<<<<<< HEAD
       - DATABASE_URL=postgresql://burnt_beats:burnt_beats_password@postgres:5432/burnt_beats
       - REDIS_URL=redis://redis:6379
       - NEXT_PUBLIC_APP_URL=http://localhost:3000
@@ -75,3 +76,32 @@ volumes:
 networks:
   burnt-beats-network:
     driver: bridge
+=======
+      - DATABASE_URL=${DATABASE_URL}
+      - GOOGLE_CLOUD_PROJECT_ID=${GOOGLE_CLOUD_PROJECT_ID}
+      - GOOGLE_CLOUD_KEY_FILE=${GOOGLE_CLOUD_KEY_FILE}
+      - GOOGLE_CLOUD_BUCKET_NAME=${GOOGLE_CLOUD_BUCKET_NAME}
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+      - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET}
+      - NEXT_PUBLIC_STACK_PROJECT_ID=${NEXT_PUBLIC_STACK_PROJECT_ID}
+      - NEXT_PUBLIC_STACK_PUBLISHABLE_CLIENT_KEY=${NEXT_PUBLIC_STACK_PUBLISHABLE_CLIENT_KEY}
+      - STACK_SECRET_SERVER_KEY=${STACK_SECRET_SERVER_KEY}
+    depends_on:
+      - postgres
+    volumes:
+      - ./google-cloud-key.json:/app/google-cloud-key.json
+
+  postgres:
+    image: postgres:15
+    environment:
+      - POSTGRES_DB=burnt_beats
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
+>>>>>>> ac05bde066e7c465bf6cf291993fec9ae72ff6fd
