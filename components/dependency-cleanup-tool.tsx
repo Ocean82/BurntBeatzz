@@ -3,175 +3,130 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { CheckCircle, XCircle, AlertTriangle, Copy } from "lucide-react"
+import { CheckCircle, XCircle, Copy, AlertTriangle } from "lucide-react"
 
 export default function DependencyCleanupTool() {
-  const [step, setStep] = useState(0)
-  const [copied, setCopied] = useState<string | null>(null)
+  const [completedSteps, setCompletedSteps] = useState<number[]>([])
+  const [copiedCommand, setCopiedCommand] = useState<string | null>(null)
 
-  const problematicPackages = ["@op-engineering/op-sqlite", "react-native", "bun-types"]
-
-  const cleanupSteps = [
+  const steps = [
     {
-      title: "Delete Lock Files and Node Modules",
-      description: "Remove all cached dependency information",
-      commands: ["rm -rf node_modules", "rm package-lock.json", "rm pnpm-lock.yaml", "rm yarn.lock"],
+      id: 1,
+      title: "Remove @op-engineering/op-sqlite",
+      description: "Delete this line from package.json dependencies",
+      command: `"@op-engineering/op-sqlite": "latest"`,
+      action: "Delete this entire line from your package.json",
     },
     {
-      title: "Replace package.json",
-      description: "Use the clean package.json provided above",
-      commands: [
-        "# Copy the clean package.json from the CodeProject above",
-        "# Make sure it contains NO @op-engineering/op-sqlite",
-        "# Make sure it contains NO react-native",
-        "# Make sure it contains NO bun-types",
-      ],
+      id: 2,
+      title: "Delete lock files",
+      description: "Remove all lock files and node_modules",
+      command: "rm -rf node_modules package-lock.json pnpm-lock.yaml yarn.lock",
+      action: "Run this command in your project directory",
     },
     {
-      title: "Create Clean .npmrc",
-      description: "Configure npm for clean dependency resolution",
-      commands: [
-        'echo "strict-peer-deps=false" > .npmrc',
-        'echo "legacy-peer-deps=false" >> .npmrc',
-        'echo "audit=false" >> .npmrc',
-        'echo "fund=false" >> .npmrc',
-      ],
+      id: 3,
+      title: "Fresh install",
+      description: "Install dependencies with clean tree",
+      command: "npm install",
+      action: "Run npm install to get clean dependencies",
     },
     {
-      title: "Fresh Install",
-      description: "Install dependencies with clean slate",
-      commands: ["npm install"],
-    },
-    {
-      title: "Commit and Push",
-      description: "Save the clean configuration",
-      commands: [
-        "git add .",
-        'git commit -m "Clean dependencies - remove react-native conflicts"',
-        "git push origin test",
-      ],
+      id: 4,
+      title: "Commit changes",
+      description: "Commit the cleaned package.json",
+      command: 'git add . && git commit -m "Remove op-sqlite dependency" && git push origin test',
+      action: "Commit and push the changes",
     },
   ]
 
-  const copyToClipboard = (text: string, id: string) => {
+  const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text)
-    setCopied(id)
-    setTimeout(() => setCopied(null), 2000)
+    setCopiedCommand(text)
+    setTimeout(() => setCopiedCommand(null), 2000)
+  }
+
+  const toggleStep = (stepId: number) => {
+    setCompletedSteps((prev) => (prev.includes(stepId) ? prev.filter((id) => id !== stepId) : [...prev, stepId]))
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-6 space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <AlertTriangle className="h-5 w-5 text-red-500" />
-            Dependency Conflict Detected
-          </CardTitle>
-          <CardDescription>Your package.json still contains packages that conflict with React 18</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Alert className="mb-4">
-            <XCircle className="h-4 w-4" />
-            <AlertDescription>
-              <strong>Problematic packages found:</strong>
-              <ul className="list-disc list-inside mt-2">
-                {problematicPackages.map((pkg) => (
-                  <li key={pkg} className="text-red-600 font-mono">
-                    {pkg}
-                  </li>
-                ))}
-              </ul>
-            </AlertDescription>
-          </Alert>
-        </CardContent>
-      </Card>
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 p-4">
+      <div className="max-w-4xl mx-auto">
+        <Card className="mb-6 border-red-500/20 bg-red-950/20">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-red-400">
+              <AlertTriangle className="h-5 w-5" />
+              Dependency Conflict Detected
+            </CardTitle>
+            <CardDescription className="text-red-300">
+              @op-engineering/op-sqlite is causing React version conflicts. Follow these steps to fix it.
+            </CardDescription>
+          </CardHeader>
+        </Card>
 
-      <div className="space-y-4">
-        <h2 className="text-2xl font-bold">Step-by-Step Cleanup Process</h2>
-
-        {cleanupSteps.map((stepData, index) => (
-          <Card key={index} className={`${step >= index ? "border-green-500" : "border-gray-200"}`}>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                {step > index ? (
-                  <CheckCircle className="h-5 w-5 text-green-500" />
-                ) : (
-                  <div className="h-5 w-5 rounded-full border-2 border-gray-300 flex items-center justify-center text-xs">
-                    {index + 1}
-                  </div>
-                )}
-                Step {index + 1}: {stepData.title}
-              </CardTitle>
-              <CardDescription>{stepData.description}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                {stepData.commands.map((command, cmdIndex) => (
-                  <div key={cmdIndex} className="flex items-center gap-2 p-2 bg-gray-100 rounded font-mono text-sm">
-                    <code className="flex-1">{command}</code>
+        <div className="space-y-4">
+          {steps.map((step) => (
+            <Card key={step.id} className="border-gray-700 bg-gray-800/50">
+              <CardHeader>
+                <CardTitle className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
                     <Button
+                      variant="ghost"
                       size="sm"
-                      variant="outline"
-                      onClick={() => copyToClipboard(command, `${index}-${cmdIndex}`)}
+                      onClick={() => toggleStep(step.id)}
+                      className={`p-1 ${
+                        completedSteps.includes(step.id)
+                          ? "text-green-400 hover:text-green-300"
+                          : "text-gray-400 hover:text-gray-300"
+                      }`}
                     >
-                      {copied === `${index}-${cmdIndex}` ? (
-                        <CheckCircle className="h-4 w-4 text-green-500" />
+                      {completedSteps.includes(step.id) ? (
+                        <CheckCircle className="h-5 w-5" />
                       ) : (
-                        <Copy className="h-4 w-4" />
+                        <XCircle className="h-5 w-5" />
                       )}
                     </Button>
+                    <span className="text-white">
+                      Step {step.id}: {step.title}
+                    </span>
                   </div>
-                ))}
-              </div>
-
-              {step === index && (
-                <Button className="mt-4" onClick={() => setStep(step + 1)}>
-                  Mark Step {index + 1} Complete
-                </Button>
-              )}
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      {step >= cleanupSteps.length && (
-        <Alert>
-          <CheckCircle className="h-4 w-4" />
-          <AlertDescription>
-            <strong>Cleanup Complete!</strong> Your dependencies should now install without conflicts. Run{" "}
-            <code>npm install</code> to verify, then push to trigger a new Vercel build.
-          </AlertDescription>
-        </Alert>
-      )}
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Verification Commands</CardTitle>
-          <CardDescription>Run these to verify the cleanup worked</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-2">
-            {[
-              "npm list @op-engineering/op-sqlite",
-              "npm list react-native",
-              "npm list bun-types",
-              "npm install --dry-run",
-            ].map((cmd, index) => (
-              <div key={index} className="flex items-center gap-2 p-2 bg-gray-100 rounded font-mono text-sm">
-                <code className="flex-1">{cmd}</code>
-                <Button size="sm" variant="outline" onClick={() => copyToClipboard(cmd, `verify-${index}`)}>
-                  {copied === `verify-${index}` ? (
-                    <CheckCircle className="h-4 w-4 text-green-500" />
-                  ) : (
+                </CardTitle>
+                <CardDescription className="text-gray-300 ml-8">{step.description}</CardDescription>
+              </CardHeader>
+              <CardContent className="ml-8">
+                <div className="bg-gray-900 p-3 rounded-lg mb-3">
+                  <code className="text-green-400 text-sm">{step.command}</code>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => copyToClipboard(step.command)}
+                    className="ml-2 p-1 text-gray-400 hover:text-white"
+                  >
                     <Copy className="h-4 w-4" />
-                  )}
-                </Button>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+                  </Button>
+                  {copiedCommand === step.command && <span className="text-green-400 text-xs ml-2">Copied!</span>}
+                </div>
+                <p className="text-gray-400 text-sm">{step.action}</p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        <Card className="mt-6 border-green-500/20 bg-green-950/20">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-2">
+              <CheckCircle className="h-5 w-5 text-green-400" />
+              <span className="text-green-300">
+                Progress: {completedSteps.length}/{steps.length} steps completed
+              </span>
+            </div>
+            {completedSteps.length === steps.length && (
+              <p className="text-green-400 mt-2 font-semibold">🎉 All steps completed! Your build should now work.</p>
+            )}
+          </CardContent>
+        </Card>
+      </div>
     </div>
   )
 }
