@@ -27,11 +27,14 @@ export default function PricingTestComponent() {
   const [fileSizeMB, setFileSizeMB] = useState(15.5)
   const [includeLicense, setIncludeLicense] = useState(false)
   const [testSizes] = useState([
-    { name: "Small Demo", size: 3.2, description: "Short demo track" },
-    { name: "Standard Song", size: 7.8, description: "Typical 3-minute song" },
+    { name: "Tiny Demo", size: 2.5, description: "Very small demo file" },
+    { name: "Small Track", size: 5.0, description: "Exactly 5MB boundary" },
+    { name: "Standard Song", size: 7.8, description: "Under 9MB - Base Song" },
+    { name: "9MB Boundary", size: 9.0, description: "Exactly 9MB - Premium tier" },
     { name: "High Quality", size: 15.5, description: "Premium quality track" },
-    { name: "Deluxe Track", size: 25.7, description: "Ultra high-quality with stems" },
-    { name: "Massive File", size: 45.2, description: "Full production with all stems" },
+    { name: "20MB Boundary", size: 20.0, description: "Exactly 20MB - Premium tier" },
+    { name: "Ultra Track", size: 25.7, description: "Over 20MB - Ultra tier" },
+    { name: "Massive File", size: 45.2, description: "Very large file" },
   ])
 
   const currentPricing = PricingServiceV2.calculateTotalPrice(fileSizeMB, includeLicense)
@@ -68,6 +71,18 @@ export default function PricingTestComponent() {
     }
   }
 
+  const getPricingLogicText = (size: number): string => {
+    if (size <= 5) {
+      return "≤ 5MB → 🧪 Bonus Track ($0.99)"
+    } else if (size < 9) {
+      return "< 9MB → 🔉 Base Song ($1.99)"
+    } else if (size >= 9 && size <= 20) {
+      return "9MB-20MB → 🎧 Premium Song ($4.99)"
+    } else {
+      return "> 20MB → 💽 Ultra Super Great Amazing Song ($8.99)"
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-green-900/20 p-4">
       <div className="max-w-6xl mx-auto space-y-6">
@@ -76,11 +91,11 @@ export default function PricingTestComponent() {
           <CardHeader>
             <CardTitle className="text-3xl font-bold text-green-300 flex items-center gap-3">
               <Calculator className="w-8 h-8" />
-              Pricing System Test
-              <Badge className="bg-gradient-to-r from-orange-500 to-red-500 text-white">LIVE TESTING</Badge>
+              Burnt Beats Pricing Test
+              <Badge className="bg-gradient-to-r from-orange-500 to-red-500 text-white">EXACT PRICING GUIDE</Badge>
             </CardTitle>
             <p className="text-green-400/60">
-              Test how file sizes affect pricing tiers and see the exact calculations in real-time
+              Test the exact pricing logic from your pricing guide with different file sizes
             </p>
           </CardHeader>
         </Card>
@@ -129,11 +144,17 @@ export default function PricingTestComponent() {
                     <span>50 MB</span>
                   </div>
                 </div>
+
+                {/* Current Logic Display */}
+                <div className="p-3 bg-green-900/20 border border-green-500/30 rounded-lg">
+                  <div className="text-green-300 font-medium text-sm">Pricing Logic:</div>
+                  <div className="text-green-400 text-sm mt-1">{getPricingLogicText(fileSizeMB)}</div>
+                </div>
               </div>
 
               {/* Quick Test Sizes */}
               <div className="space-y-3">
-                <Label className="text-green-300 text-sm font-medium">Quick Test Sizes</Label>
+                <Label className="text-green-300 text-sm font-medium">Test Boundary Cases</Label>
                 <div className="grid grid-cols-1 gap-2">
                   {testSizes.map((test, index) => (
                     <Button
@@ -143,10 +164,10 @@ export default function PricingTestComponent() {
                       className="justify-start bg-black/20 border-green-500/30 text-green-100 hover:bg-green-500/10"
                     >
                       <div className="text-left">
-                        <div className="font-medium">{test.name}</div>
-                        <div className="text-xs text-green-400/60">
-                          {test.size} MB • {test.description}
+                        <div className="font-medium">
+                          {test.name} - {test.size}MB
                         </div>
+                        <div className="text-xs text-green-400/60">{test.description}</div>
                       </div>
                     </Button>
                   ))}
@@ -212,12 +233,8 @@ export default function PricingTestComponent() {
                     <span className="text-green-100 font-mono">{fileSizeMB.toFixed(1)} MB</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-green-400">Tier Range:</span>
-                    <span className="text-green-100">
-                      {currentPricing.tier.maxSize === Number.POSITIVE_INFINITY
-                        ? "Over 20MB"
-                        : `Up to ${currentPricing.tier.maxSize}MB`}
-                    </span>
+                    <span className="text-green-400">Tier Logic:</span>
+                    <span className="text-green-100 text-sm">{getPricingLogicText(fileSizeMB)}</span>
                   </div>
                   <Separator className="bg-green-500/20" />
                   <div className="flex justify-between">
@@ -259,73 +276,54 @@ export default function PricingTestComponent() {
           </Card>
         </div>
 
-        {/* All Tiers Comparison */}
+        {/* Exact Pricing Guide Display */}
         <Card className="bg-black/80 backdrop-blur-sm border border-green-500/30">
           <CardHeader>
             <CardTitle className="text-green-300 flex items-center gap-2">
               <Download className="w-5 h-5" />
-              All Available Tiers
+              Exact Pricing Guide
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-              {allTiers.map((tier, index) => {
-                const isCurrentTier = tier.name === currentPricing.tier.name
-                const wouldQualify = fileSizeMB <= tier.maxSize || tier.maxSize === Number.POSITIVE_INFINITY
+            <div className="bg-black/40 border border-green-500/20 rounded-lg p-4">
+              <div className="space-y-3 text-sm">
+                <div className="border-b border-orange-500/30 pb-3">
+                  <div className="text-orange-300 font-medium text-base">🪪 Full License — $10.00</div>
+                  <div className="text-orange-400/80 mt-1">Includes 1 full license per generated track.</div>
+                  <div className="text-orange-400/60 text-xs mt-1">
+                    Once purchased, this grants you complete ownership of your track. You're free to use, modify,
+                    distribute, and monetize your music on any platform—streaming services, social media, film, games,
+                    and commercial projects. Burnt Beats retains zero rights and will never require additional payments
+                    or royalties.
+                  </div>
+                </div>
 
-                return (
-                  <div
-                    key={index}
-                    className={`border rounded-lg p-4 transition-all ${
-                      isCurrentTier
-                        ? "border-green-400 bg-green-500/10 shadow-lg shadow-green-400/20"
-                        : wouldQualify
-                          ? "border-green-500/30 bg-black/20"
-                          : "border-gray-500/30 bg-gray-900/20 opacity-50"
-                    }`}
-                  >
-                    <div className="flex items-center gap-2 mb-3">
-                      <div className={`p-1.5 rounded ${getTierColor(tier.name)}`}>{getTierIcon(tier.name)}</div>
-                      <div className="flex-1">
-                        <h4 className="font-medium text-sm">
-                          {tier.emoji} {tier.name}
-                        </h4>
-                        <p className="text-xs text-gray-400">
-                          {tier.maxSize === Number.POSITIVE_INFINITY ? "Over 20MB" : `Up to ${tier.maxSize}MB`}
-                        </p>
-                      </div>
-                    </div>
+                <div className="space-y-2">
+                  <div className="p-3 rounded bg-gradient-to-r from-orange-900/20 to-red-900/20 border border-orange-500/20">
+                    <div className="text-orange-300 font-medium">💽 Ultra Super Great Amazing Song — $8.99</div>
+                    <div className="text-orange-400/80 text-sm">High-quality track over 20MB</div>
+                    <div className="text-orange-400/60 text-xs">Perfect for deluxe or multitrack creations.</div>
+                  </div>
 
-                    <div className="text-center mb-3">
-                      <div className="text-xl font-bold text-green-300">${tier.price.toFixed(2)}</div>
-                      <div className="text-xs text-gray-400">{tier.quality}</div>
-                    </div>
+                  <div className="p-3 rounded bg-purple-900/20 border border-purple-500/20">
+                    <div className="text-purple-300 font-medium">🎧 Premium Song — $4.99</div>
+                    <div className="text-purple-400/80 text-sm">Generated tracks between 9MB and 20MB</div>
+                  </div>
 
-                    <div className="space-y-1">
-                      {tier.features.slice(0, 2).map((feature, featureIndex) => (
-                        <div key={featureIndex} className="text-xs text-gray-300 flex items-center gap-1">
-                          <CheckCircle className="w-2 h-2" />
-                          {feature}
-                        </div>
-                      ))}
-                    </div>
+                  <div className="p-3 rounded bg-blue-900/20 border border-blue-500/20">
+                    <div className="text-blue-300 font-medium">🔉 Base Song — $1.99</div>
+                    <div className="text-blue-400/80 text-sm">Tracks under 9MB</div>
+                  </div>
 
-                    <div className="mt-3 flex items-center justify-center">
-                      {isCurrentTier ? (
-                        <Badge className="bg-green-500 text-white text-xs">CURRENT TIER</Badge>
-                      ) : wouldQualify ? (
-                        <Badge variant="outline" className="border-green-500/30 text-green-400 text-xs">
-                          AVAILABLE
-                        </Badge>
-                      ) : (
-                        <Badge variant="outline" className="border-gray-500/30 text-gray-400 text-xs">
-                          TOO LARGE
-                        </Badge>
-                      )}
+                  <div className="p-3 rounded bg-gray-900/20 border border-gray-500/20">
+                    <div className="text-gray-300 font-medium">🧪 Bonus Track — $0.99</div>
+                    <div className="text-gray-400/80 text-sm">Demo version with watermark overlay</div>
+                    <div className="text-gray-400/60 text-xs">
+                      Test the vibe before you commit. Perfect for previewing.
                     </div>
                   </div>
-                )
-              })}
+                </div>
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -339,14 +337,22 @@ export default function PricingTestComponent() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid md:grid-cols-3 gap-4">
+            <div className="grid md:grid-cols-4 gap-4">
               <div className="text-center p-4 bg-green-900/20 border border-green-500/20 rounded-lg">
                 <div className="text-2xl font-bold text-green-300 mb-1">{fileSizeMB.toFixed(1)} MB</div>
-                <div className="text-sm text-green-400">Current File Size</div>
+                <div className="text-sm text-green-400">File Size</div>
               </div>
               <div className="text-center p-4 bg-blue-900/20 border border-blue-500/20 rounded-lg">
-                <div className="text-2xl font-bold text-blue-300 mb-1">{currentPricing.tier.name}</div>
+                <div className="text-lg font-bold text-blue-300 mb-1">
+                  {currentPricing.tier.emoji} {currentPricing.tier.name}
+                </div>
                 <div className="text-sm text-blue-400">Selected Tier</div>
+              </div>
+              <div className="text-center p-4 bg-purple-900/20 border border-purple-500/20 rounded-lg">
+                <div className="text-2xl font-bold text-purple-300 mb-1">
+                  ${currentPricing.downloadPrice.toFixed(2)}
+                </div>
+                <div className="text-sm text-purple-400">Download Price</div>
               </div>
               <div className="text-center p-4 bg-orange-900/20 border border-orange-500/20 rounded-lg">
                 <div className="text-2xl font-bold text-orange-300 mb-1">${currentPricing.totalPrice.toFixed(2)}</div>
@@ -355,13 +361,13 @@ export default function PricingTestComponent() {
             </div>
 
             <div className="mt-6 p-4 bg-gray-900/40 border border-gray-500/20 rounded-lg">
-              <h4 className="text-gray-300 font-medium mb-2">Pricing Logic:</h4>
+              <h4 className="text-gray-300 font-medium mb-2">Exact Pricing Logic from Guide:</h4>
               <div className="text-sm text-gray-400 space-y-1">
-                <div>• Files ≤ 5MB → 🧪 Bonus Track ($0.99)</div>
-                <div>• Files ≤ 9MB → 🔉 Base Song ($1.99)</div>
-                <div>• Files ≤ 20MB → 🎧 Premium Song ($4.99)</div>
-                <div>• Files &gt; 20MB → 💽 Ultra Super Great Amazing Song ($8.99)</div>
-                <div>• Full License adds $10.00 to any tier</div>
+                <div>• Files ≤ 5MB → 🧪 Bonus Track ($0.99) - Demo with watermark</div>
+                <div>• Files &lt; 9MB → 🔉 Base Song ($1.99) - Tracks under 9MB</div>
+                <div>• Files 9MB-20MB → 🎧 Premium Song ($4.99) - Between 9MB and 20MB</div>
+                <div>• Files &gt; 20MB → 💽 Ultra Super Great Amazing Song ($8.99) - Over 20MB</div>
+                <div>• 🪪 Full License adds $10.00 - Complete ownership</div>
               </div>
             </div>
           </CardContent>

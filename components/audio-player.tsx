@@ -16,20 +16,8 @@ import {
   SkipBack,
   SkipForward,
 } from "lucide-react"
-import type { Song } from "@shared/schema"
-
-interface SongSection {
-  id: number
-  label: string
-  start: number
-  end: number
-}
-
-interface WatermarkConfig {
-  hasWatermark: boolean
-  interval?: number
-  volume?: number
-}
+import type { Song, SongSection, WatermarkConfig } from "@shared/schema"
+import { formatTime } from "@/lib/utils"
 
 interface AudioPlayerProps {
   song: Song & {
@@ -66,13 +54,6 @@ const WatermarkIndicator = ({ watermark, hasWatermark }: WatermarkIndicatorProps
 }
 
 const PLAYBACK_RATES = [0.5, 0.75, 1, 1.25, 1.5, 2] as const
-
-// Format time utility function
-const formatTime = (seconds: number): string => {
-  const mins = Math.floor(seconds / 60)
-  const secs = Math.floor(seconds % 60)
-  return `${mins}:${secs.toString().padStart(2, "0")}`
-}
 
 export default function AudioPlayer({
   song,
@@ -292,11 +273,9 @@ export default function AudioPlayer({
   // Error state
   if (error) {
     return (
-      <Card
-        className={`w-full bg-black/80 backdrop-blur-sm border border-green-500/30 shadow-xl shadow-green-500/10 ${className}`}
-      >
+      <Card className={`w-full ${className}`}>
         <CardContent className="p-6">
-          <div className="flex items-center gap-3 text-red-400">
+          <div className="flex items-center gap-3 text-red-500">
             <AlertCircle className="w-5 h-5" />
             <span>{error}</span>
           </div>
@@ -308,11 +287,9 @@ export default function AudioPlayer({
   // No audio URL state
   if (!audioUrl) {
     return (
-      <Card
-        className={`w-full bg-black/80 backdrop-blur-sm border border-green-500/30 shadow-xl shadow-green-500/10 ${className}`}
-      >
+      <Card className={`w-full ${className}`}>
         <CardContent className="p-6">
-          <div className="flex items-center gap-3 text-green-400/60">
+          <div className="flex items-center gap-3 text-gray-500">
             <AlertCircle className="w-5 h-5" />
             <span>No audio available</span>
           </div>
@@ -322,17 +299,15 @@ export default function AudioPlayer({
   }
 
   return (
-    <Card
-      className={`w-full bg-black/80 backdrop-blur-sm border border-green-500/30 shadow-xl shadow-green-500/10 ${className}`}
-    >
+    <Card className={`w-full ${className}`}>
       <audio ref={audioRef} src={audioUrl} loop={loop} preload="metadata" />
 
       <CardContent className="p-6">
         {/* Song Info Header */}
         <div className="flex items-start justify-between mb-4">
           <div className="flex-1">
-            <h3 className="font-semibold text-lg mb-1 text-green-100">{song.title}</h3>
-            <p className="text-sm text-green-400/80">
+            <h3 className="font-semibold text-lg mb-1">{song.title}</h3>
+            <p className="text-sm text-muted-foreground">
               {song.genre} • {formatTime(duration)}
             </p>
           </div>
@@ -352,7 +327,7 @@ export default function AudioPlayer({
             className="w-full"
             disabled={isLoading}
           />
-          <div className="flex justify-between text-xs text-green-400/60">
+          <div className="flex justify-between text-xs text-muted-foreground">
             <span>{formatTime(currentTime)}</span>
             <span>{formatTime(duration)}</span>
           </div>
@@ -360,21 +335,16 @@ export default function AudioPlayer({
 
         {/* Main Controls */}
         <div className="flex items-center justify-center gap-4 mb-4">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={skipBackward}
-            disabled={isLoading}
-            className="text-green-300 hover:text-green-100 hover:bg-green-500/10"
-          >
+          <Button variant="ghost" size="sm" onClick={skipBackward} disabled={isLoading}>
             <SkipBack className="w-4 h-4" />
           </Button>
 
           <Button
+            variant="default"
             size="lg"
             onClick={togglePlay}
             disabled={isLoading}
-            className="w-12 h-12 rounded-full bg-gradient-to-r from-orange-500 via-red-500 to-green-500 hover:from-orange-600 hover:via-red-600 hover:to-green-600 text-white font-semibold shadow-lg shadow-green-500/30"
+            className="w-12 h-12 rounded-full"
           >
             {isLoading ? (
               <Loader2 className="w-5 h-5 animate-spin" />
@@ -385,25 +355,14 @@ export default function AudioPlayer({
             )}
           </Button>
 
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={skipForward}
-            disabled={isLoading}
-            className="text-green-300 hover:text-green-100 hover:bg-green-500/10"
-          >
+          <Button variant="ghost" size="sm" onClick={skipForward} disabled={isLoading}>
             <SkipForward className="w-4 h-4" />
           </Button>
         </div>
 
         {/* Volume Control */}
         <div className="flex items-center gap-3 mb-4">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={toggleMute}
-            className="text-green-300 hover:text-green-100 hover:bg-green-500/10"
-          >
+          <Button variant="ghost" size="sm" onClick={toggleMute}>
             {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
           </Button>
           <Slider
@@ -417,19 +376,15 @@ export default function AudioPlayer({
 
         {/* Playback Rate Control */}
         <div className="flex items-center gap-2 mb-4">
-          <Gauge className="w-4 h-4 text-green-400" />
-          <span className="text-sm text-green-300">Speed:</span>
+          <Gauge className="w-4 h-4" />
+          <span className="text-sm">Speed:</span>
           {PLAYBACK_RATES.map((rate) => (
             <Button
               key={rate}
               variant={playbackRate === rate ? "default" : "ghost"}
               size="sm"
               onClick={() => handlePlaybackRateChange(rate)}
-              className={`text-xs px-2 ${
-                playbackRate === rate
-                  ? "bg-green-500/30 text-green-100"
-                  : "text-green-300 hover:text-green-100 hover:bg-green-500/10"
-              }`}
+              className="text-xs px-2"
             >
               {rate}x
             </Button>
@@ -438,10 +393,10 @@ export default function AudioPlayer({
 
         {/* Sections Display */}
         {showSections && sections.length > 0 && (
-          <div className="border-t border-green-500/20 pt-4">
+          <div className="border-t pt-4">
             <div className="flex items-center gap-2 mb-2">
-              <ListMusic className="w-4 h-4 text-green-400" />
-              <span className="text-sm font-medium text-green-300">Sections</span>
+              <ListMusic className="w-4 h-4" />
+              <span className="text-sm font-medium">Sections</span>
             </div>
             <div className="grid grid-cols-2 gap-2">
               {sections.map((section: SongSection, index: number) => (
@@ -455,11 +410,7 @@ export default function AudioPlayer({
                       audio.currentTime = section.start
                     }
                   }}
-                  className={`justify-start text-xs ${
-                    currentSection === section.label
-                      ? "bg-green-500/30 text-green-100"
-                      : "text-green-300 hover:text-green-100 hover:bg-green-500/10"
-                  }`}
+                  className="justify-start text-xs"
                 >
                   {section.label}
                   <span className="ml-auto text-xs opacity-60">{formatTime(section.start)}</span>
@@ -472,9 +423,7 @@ export default function AudioPlayer({
         {/* Current Section Indicator */}
         {currentSection && (
           <div className="mt-2 text-center">
-            <span className="text-xs bg-green-500/20 text-green-300 px-2 py-1 rounded">
-              Now playing: {currentSection}
-            </span>
+            <span className="text-xs bg-primary/10 px-2 py-1 rounded">Now playing: {currentSection}</span>
           </div>
         )}
       </CardContent>

@@ -1,0 +1,111 @@
+{
+  "id": "melody2",
+  "title": "Electric Pulse",
+  "artist": "AI Generated",
+  "genre": "Electronic",
+  "key": "A Minor",
+  "tempo": 140,
+  "timeSignature": "4/4",
+  "duration": 240,
+  "mood": "Energetic",
+  "tags": ["electronic", "energetic", "pulse", "dance"],
+  "structure": {
+    "intro": { "bars": 8, "startTime": 0 },
+    "buildup": { "bars": 16, "startTime": 16 },
+    "drop": { "bars": 32, "startTime": 48 },
+    "breakdown": { "bars": 16, "startTime": 112 },
+    "drop2": { "bars": 32, "startTime": 144 },
+    "outro": { "bars": 16, "startTime": 208 }
+  },
+  "chords": [
+    { "name": "Am", "notes": ["A", "C", "E"], "duration": 2, "time": 0 },
+    { "name": "F", "notes": ["F", "A", "C"], "duration": 2, "time": 2 },
+    { "name": "C", "notes": ["C", "E", "G"], "duration": 2, "time": 4 },
+    { "name": "G", "notes": ["G", "B", "D"], "duration": 2, "time": 6 },
+    { "name": "Am", "notes": ["A", "C", "E"], "duration": 2, "time": 8 },
+    { "name": "Dm", "notes": ["D", "F", "A"], "duration": 2, "time": 10 },
+    { "name": "G", "notes": ["G", "B", "D"], "duration": 2, "time": 12 },
+    { "name": "C", "notes": ["C", "E", "G"], "duration": 2, "time": 14 }
+  ],
+  "melody": [
+    { "note": "A4", "duration": 0.5, "time": 0, "velocity": 100 },
+    { "note": "C5", "duration": 0.5, "time": 0.5, "velocity": 95 },
+    { "note": "E5", "duration": 1, "time": 1, "velocity": 110 },
+    { "note": "A5", "duration": 0.5, "time": 2, "velocity": 120 },
+    { "note": "G5", "duration": 0.5, "time": 2.5, "velocity": 115 },
+    { "note": "F5", "duration": 1, "time": 3, "velocity": 105 },
+    { "note": "E5", "duration": 0.5, "time": 4, "velocity": 100 },
+    { "note": "C5", "duration": 0.5, "time": 4.5, "velocity": 95 },
+    { "note": "G5", "duration": 1, "time": 5, "velocity": 110 },
+    { "note": "F5", "duration": 0.5, "time": 6, "velocity": 105 },
+    { "note": "E5", "duration": 0.5, "time": 6.5, "velocity": 100 },
+    { "note": "D5", "duration": 1, "time": 7, "velocity": 95 },
+    { "note": "A4", "duration": 0.25, "time": 8, "velocity": 100 },
+    { "note": "B4", "duration": 0.25, "time": 8.25, "velocity": 95 },
+    { "note": "C5", "duration": 0.5, "time": 8.5, "velocity": 105 },
+    { "note": "D5", "duration": 0.5, "time": 9, "velocity": 110 },
+    { "note": "F5", "duration": 1, "time": 9.5, "velocity": 115 },
+    { "note": "A5", "duration": 0.5, "time": 10.5, "velocity": 120 },
+    { "note": "G5", "duration": 0.5, "time": 11, "velocity": 115 },
+    { "note": "E5", "duration": 1, "time": 11.5, "velocity": 105 },
+    { "note": "C5", "duration": 0.5, "time": 12.5, "velocity": 100 },
+    { "note": "A4", "duration": 0.5, "time": 13, "velocity": 95 },
+    { "note": "G4", "duration": 1, "time": 13.5, "velocity": 90 }
+  ],
+  "instruments": [
+    {
+      "name": "Lead Synth",
+      "type": "synth",
+      "channel": 1,
+      "volume": 90,
+      "pan": 0,
+      "preset": "saw_lead"
+    },
+    {
+      "name": "Bass Synth",
+      "type": "bass",
+      "channel": 2,
+      "volume": 85,
+      "pan": 0,
+      "preset": "sub_bass"
+    },
+    {
+      "name": "Arp Synth",
+      "type": "synth",
+      "channel": 3,
+      "volume": 70,
+      "pan": 30,
+      "preset": "arp_pluck"
+    },
+    {
+      "name": "Drums",
+      "type": "percussion",
+      "channel": 10,
+      "volume": 95,
+      "pan": 0
+    }
+  ],
+  "effects": {
+    "reverb": { "enabled": true, "roomSize": 0.4, "damping": 0.6 },
+    "delay": { "enabled": true, "time": 0.125, "feedback": 0.4, "mix": 0.3 },
+    "chorus": { "enabled": true, "rate": 0.5, "depth": 0.3, "mix": 0.2 },
+    "distortion": { "enabled": true, "drive": 0.3, "tone": 0.7 },
+    "filter": { "enabled": true, "type": "lowpass", "frequency": 8000, "resonance": 0.2 }
+  },
+  "automation": [
+    { "parameter": "filter.frequency", "time": 0, "value": 2000 },
+    { "parameter": "filter.frequency", "time": 16, "value": 8000 },
+    { "parameter": "filter.frequency", "time": 32, "value": 12000 },
+    { "parameter": "reverb.mix", "time": 48, "value": 0.6 },
+    { "parameter": "reverb.mix", "time": 64, "value": 0.2 }
+  ],
+  "metadata": {
+    "created": "2024-01-15T11:45:00Z",
+    "modified": "2024-01-15T11:45:00Z",
+    "version": "1.0",
+    "bpm": 140,
+    "scale": "A Minor Pentatonic",
+    "energy": "High",
+    "danceability": 0.9
+  }
+}

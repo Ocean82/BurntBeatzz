@@ -1,0 +1,97 @@
+FROM nvidia/cuda:11.8-devel-ubuntu20.04
+
+# Set environment variables
+ENV DEBIAN_FRONTEND=noninteractive
+ENV PYTHONUNBUFFERED=1
+ENV CUDA_HOME=/usr/local/cuda
+ENV PATH=${CUDA_HOME}/bin:${PATH}
+ENV LD_LIBRARY_PATH=${CUDA_HOME}/lib64:${LD_LIBRARY_PATH}
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    python3.9 \
+    python3.9-dev \
+    python3-pip \
+    git \
+    wget \
+    curl \
+    build-essential \
+    cmake \
+    pkg-config \
+    libasound2-dev \
+    libportaudio2 \
+    libportaudiocpp0 \
+    portaudio19-dev \
+    libsndfile1-dev \
+    libfftw3-dev \
+    fluidsynth \
+    ffmpeg \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set Python 3.9 as default
+RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.9 1
+RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.9 1
+
+# Upgrade pip
+RUN python3 -m pip install --upgrade pip setuptools wheel
+
+# Set working directory
+WORKDIR /app
+
+# Copy requirements first for better caching
+COPY requirements.txt .
+
+# Install Python dependencies
+RUN pip3 install --no-cache-dir -r requirements.txt
+
+# Install PyTorch with CUDA support
+RUN pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+
+# Clone Ocean82/RVC repository
+RUN git clone https://github.com/Ocean82/RVC.git /app/rvc_source
+
+# Install RVC dependencies
+WORKDIR /app/rvc_source
+RUN pip3 install -r requirements.txt || echo "RVC requirements installed with warnings"
+
+# Create necessary directories
+WORKDIR /app
+RUN mkdir -p rvc_models temp_audio output soundfonts rvc_training
+
+# Download GeneralUser GS SoundFont
+RUN wget -O soundfonts/GeneralUser_GS.sf2 \
+    "https://www.schristiancollins.com/generaluser/GeneralUser_GS_v1.471.zip" || \
+    echo "SoundFont download failed - will use fallback synthesis"
+
+# Copy application code
+COPY backend/ ./backend/
+COPY components/ ./components/
+COPY api/ ./api/
+COPY lib/ ./lib/
+COPY hooks/ ./hooks/
+COPY app/ ./app/
+
+# Copy package.json and install Node.js dependencies
+COPY package.json package-lock.json ./
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
+    apt-get install -y nodejs && \
+    npm install
+
+# Set permissions
+RUN chmod +x backend/*.py
+RUN chmod -R 755 rvc_models temp_audio output soundfonts
+
+# Create entrypoint script
+COPY docker-entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# Expose ports
+EXPOSE 3000 8000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:3000/api/health || exit 1
+
+# Set entrypoint
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["npm", "run", "dev"]

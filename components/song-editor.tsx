@@ -36,7 +36,7 @@ interface SongEditorProps {
   onUpgrade: () => void
 }
 
-export default function SongEditor({ song, userPlan, onSongUpdated, onUpgrade }: SongEditorProps) {
+function SongEditor({ song, userPlan, onSongUpdated, onUpgrade }: SongEditorProps) {
   const [isEditing, setIsEditing] = useState(false)
   const [editedSong, setEditedSong] = useState(song)
   const [sections, setSections] = useState<SongSection[]>(
@@ -379,3 +379,5 @@ export default function SongEditor({ song, userPlan, onSongUpdated, onUpgrade }:
     </Card>
   )
 }
+
+export { SongEditor }

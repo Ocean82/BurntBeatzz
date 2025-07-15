@@ -1,0 +1,90 @@
+version: '3.8'
+
+services:
+  burnt-beats-rvc:
+    build:
+      context: .
+      dockerfile: Dockerfile.rvc
+    container_name: burnt-beats-rvc
+    ports:
+      - "8000:8000"
+      - "3000:3000"  # Next.js frontend
+    volumes:
+      # Persistent storage for models and generated content
+      - ./rvc_models:/app/rvc_models
+      - ./generated_songs:/app/generated_songs
+      - ./soundfonts:/app/soundfonts
+      - ./temp_audio:/app/temp_audio
+      - ./temp_mixing:/app/temp_mixing
+    environment:
+      # Python environment
+      - PYTHONPATH=/app:/app/rvc_source
+      - PYTHONUNBUFFERED=1
+      
+      # CUDA settings
+      - CUDA_VISIBLE_DEVICES=0
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+      
+      # Audio settings
+      - PULSE_RUNTIME_PATH=/tmp/pulse
+      - ALSA_CARD=0
+      
+      # RVC settings
+      - RVC_MODELS_DIR=/app/rvc_models
+      - RVC_TEMP_DIR=/app/temp_audio
+      - RVC_SAMPLE_RATE=44100
+      
+      # Database (if using PostgreSQL)
+      - DATABASE_URL=${DATABASE_URL}
+      - POSTGRES_URL=${POSTGRES_URL}
+      
+      # Next.js settings
+      - NODE_ENV=production
+      - NEXT_TELEMETRY_DISABLED=1
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import torch; print('CUDA:', torch.cuda.is_available())"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # Optional: Separate service for CPU-only MIDI processing
+  midi-processor:
+    build:
+      context: .
+      dockerfile: Dockerfile.rvc
+    container_name: burnt-beats-midi
+    volumes:
+      - ./temp_mixing:/app/temp_mixing
+      - ./soundfonts:/app/soundfonts
+    environment:
+      - PYTHONPATH=/app
+      - CUDA_VISIBLE_DEVICES=""  # CPU only
+    command: ["python3", "-m", "backend.audio_mixer"]
+    restart: unless-stopped
+
+  # Optional: Redis for caching
+  redis:
+    image: redis:7-alpine
+    container_name: burnt-beats-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+
+volumes:
+  redis_data:
+
+networks:
+  default:
+    name: burnt-beats-network

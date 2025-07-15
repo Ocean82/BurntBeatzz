@@ -12,7 +12,7 @@ interface ContestBoostsProps {
   onBoostPurchase: (boostType: string) => void
 }
 
-export default function ContestBoosts({ songId, songTitle, onBoostPurchase }: ContestBoostsProps) {
+function ContestBoosts({ songId, songTitle, onBoostPurchase }: ContestBoostsProps) {
   const [selectedBoost, setSelectedBoost] = useState<string | null>(null)
 
   const boostOptions = [
@@ -150,3 +150,5 @@ export default function ContestBoosts({ songId, songTitle, onBoostPurchase }: Co
     </Card>
   )
 }
+
+export { ContestBoosts }
