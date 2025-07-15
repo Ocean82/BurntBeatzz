@@ -1,0 +1,68 @@
+// src/services/voice-processing-service.ts
+import { exec } from 'child_process';
+import { promisify } from 'util';
+import path from 'path';
+import { FileStorageService } from './file-storage-service';
+
+const execAsync = promisify(exec);
+
+export class VoiceProcessingService {
+  constructor(
+    private storageService: FileStorageService,
+    private pythonScriptPath = path.join(__dirname, '../../voice-processing/process.py')
+  ) {}
+
+  async processVoiceSample(
+    audioData: Buffer,
+    options: {
+      userId: string;
+      name: string;
+      sampleText?: string;
+    }
+  ): Promise<{
+    sampleFileName: string;
+    anthemFileName: string;
+    characteristics: any;
+  }> {
+    // Save original file
+    const inputFileName = await this.storageService.storeFile(audioData);
+    const inputPath = this.storageService.getFilePath(inputFileName);
+
+    // Process with Python script
+    const outputPrefix = `voice_${options.userId}_${Date.now()}`;
+    const outputPath = path.join(this.storageService.storagePath, outputPrefix);
+
+    try {
+      await execAsync(`python3 ${this.pythonScriptPath} ${inputPath} ${outputPath} "${options.sampleText || ''}"`);
+
+      // Load processed files
+      const sampleFileName = `${outputPrefix}_sample.wav`;
+      const anthemFileName = `${outputPrefix}_anthem.wav`;
+      const characteristics = await this.analyzeCharacteristics(inputPath);
+
+      return {
+        sampleFileName,
+        anthemFileName,
+        characteristics
+      };
+    } finally {
+      await this.storageService.deleteFile(inputFileName);
+    }
+  }
+
+  private async analyzeCharacteristics(filePath: string): Promise<any> {
+    // This would use your actual analysis methods
+    return {
+      pitchRange: [180, 280],
+      timbre: 'warm',
+      clarity: 0.85,
+      stability: 0.9,
+      genreSuitability: {
+        pop: 0.92,
+        rock: 0.85,
+        jazz: 0.88,
+        classical: 0.78
+      }
+    };
+  }
+}

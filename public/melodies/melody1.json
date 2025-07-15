@@ -1,0 +1,88 @@
+{
+  "id": "melody1",
+  "title": "Sunset Dreams",
+  "artist": "AI Generated",
+  "genre": "Ambient",
+  "key": "C Major",
+  "tempo": 120,
+  "timeSignature": "4/4",
+  "duration": 180,
+  "mood": "Peaceful",
+  "tags": ["ambient", "relaxing", "sunset", "dreams"],
+  "structure": {
+    "intro": { "bars": 8, "startTime": 0 },
+    "verse": { "bars": 16, "startTime": 16 },
+    "chorus": { "bars": 16, "startTime": 48 },
+    "verse2": { "bars": 16, "startTime": 80 },
+    "chorus2": { "bars": 16, "startTime": 112 },
+    "outro": { "bars": 8, "startTime": 144 }
+  },
+  "chords": [
+    { "name": "C", "notes": ["C", "E", "G"], "duration": 4, "time": 0 },
+    { "name": "Am", "notes": ["A", "C", "E"], "duration": 4, "time": 4 },
+    { "name": "F", "notes": ["F", "A", "C"], "duration": 4, "time": 8 },
+    { "name": "G", "notes": ["G", "B", "D"], "duration": 4, "time": 12 },
+    { "name": "Em", "notes": ["E", "G", "B"], "duration": 4, "time": 16 },
+    { "name": "Am", "notes": ["A", "C", "E"], "duration": 4, "time": 20 },
+    { "name": "F", "notes": ["F", "A", "C"], "duration": 4, "time": 24 },
+    { "name": "G", "notes": ["G", "B", "D"], "duration": 4, "time": 28 }
+  ],
+  "melody": [
+    { "note": "C4", "duration": 1, "time": 0, "velocity": 80 },
+    { "note": "D4", "duration": 1, "time": 1, "velocity": 75 },
+    { "note": "E4", "duration": 2, "time": 2, "velocity": 85 },
+    { "note": "G4", "duration": 1, "time": 4, "velocity": 90 },
+    { "note": "A4", "duration": 1, "time": 5, "velocity": 85 },
+    { "note": "G4", "duration": 2, "time": 6, "velocity": 80 },
+    { "note": "E4", "duration": 1, "time": 8, "velocity": 75 },
+    { "note": "F4", "duration": 1, "time": 9, "velocity": 80 },
+    { "note": "G4", "duration": 2, "time": 10, "velocity": 85 },
+    { "note": "C5", "duration": 1, "time": 12, "velocity": 95 },
+    { "note": "B4", "duration": 1, "time": 13, "velocity": 90 },
+    { "note": "A4", "duration": 2, "time": 14, "velocity": 85 },
+    { "note": "G4", "duration": 1, "time": 16, "velocity": 80 },
+    { "note": "E4", "duration": 1, "time": 17, "velocity": 75 },
+    { "note": "C4", "duration": 2, "time": 18, "velocity": 70 },
+    { "note": "D4", "duration": 1, "time": 20, "velocity": 75 },
+    { "note": "E4", "duration": 1, "time": 21, "velocity": 80 },
+    { "note": "F4", "duration": 2, "time": 22, "velocity": 85 },
+    { "note": "A4", "duration": 1, "time": 24, "velocity": 90 },
+    { "note": "G4", "duration": 1, "time": 25, "velocity": 85 },
+    { "note": "F4", "duration": 2, "time": 26, "velocity": 80 }
+  ],
+  "instruments": [
+    {
+      "name": "Piano",
+      "type": "keyboard",
+      "channel": 1,
+      "volume": 80,
+      "pan": 0
+    },
+    {
+      "name": "Strings",
+      "type": "strings",
+      "channel": 2,
+      "volume": 60,
+      "pan": -20
+    },
+    {
+      "name": "Pad",
+      "type": "synth",
+      "channel": 3,
+      "volume": 40,
+      "pan": 20
+    }
+  ],
+  "effects": {
+    "reverb": { "enabled": true, "roomSize": 0.7, "damping": 0.3 },
+    "delay": { "enabled": true, "time": 0.25, "feedback": 0.3, "mix": 0.2 },
+    "chorus": { "enabled": false }
+  },
+  "metadata": {
+    "created": "2024-01-15T10:30:00Z",
+    "modified": "2024-01-15T10:30:00Z",
+    "version": "1.0",
+    "bpm": 120,
+    "scale": "C Major Pentatonic"
+  }
+}
