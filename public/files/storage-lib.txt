@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // lib/storage.ts
 import { prisma } from '@/lib/prisma';
 
@@ -36,3 +37,43 @@ export async function getFromStorage(userId: number, songId: number): Promise<an
     throw new Error('Failed to retrieve data from storage');
   }
 }
+=======
+// lib/storage.ts
+import { prisma } from '@/lib/prisma';
+
+interface StorageData {
+  userId: number;
+  songId: number;
+  data: any;
+}
+
+export async function saveToStorage({ userId, songId, data }: StorageData): Promise<void> {
+  try {
+    await prisma.storage.create({
+      data: {
+        userId,
+        songId,
+        data: JSON.stringify(data),
+      },
+    });
+  } catch (error) {
+    console.error('Error saving to storage:', error);
+    throw new Error('Failed to save data to storage');
+  }
+}
+
+export async function getFromStorage(userId: number, songId: number): Promise<any | null> {
+  try {
+    const storage = await prisma.storage.findFirst({
+      where: {
+        userId,
+        songId,
+      },
+    });
+    return storage ? JSON.parse(storage.data) : null;
+  } catch (error) {
+    console.error('Error getting from storage:', error);
+    throw new Error('Failed to retrieve data from storage');
+  }
+}
+>>>>>>> ac05bde066e7c465bf6cf291993fec9ae72ff6fd

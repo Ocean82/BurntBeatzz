@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// BURNT BEATS PRICING MODEL - Exact pricing from guide
+=======
 // BURNT BEATS PRICING MODEL - Updated from pricing guide
+>>>>>>> ac05bde066e7c465bf6cf291993fec9ae72ff6fd
 export interface DownloadTier {
   name: string
   maxSize: number // in MB
@@ -24,7 +28,11 @@ const DOWNLOAD_TIERS: DownloadTier[] = [
     price: 0.99,
     quality: "Demo Quality",
     description: "Demo version with watermark overlay. Test the vibe before you commit. Perfect for previewing.",
+<<<<<<< HEAD
+    features: ["MP3 128kbps", "Watermarked", "Preview quality", "Demo version"],
+=======
     features: ["MP3 128kbps", "Watermarked", "Preview quality"],
+>>>>>>> ac05bde066e7c465bf6cf291993fec9ae72ff6fd
     emoji: "🧪",
   },
   {
@@ -33,7 +41,11 @@ const DOWNLOAD_TIERS: DownloadTier[] = [
     price: 1.99,
     quality: "Standard Quality",
     description: "Tracks under 9MB",
+<<<<<<< HEAD
+    features: ["MP3 320kbps", "Standard quality", "Personal use", "No watermark"],
+=======
     features: ["MP3 320kbps", "Standard quality", "Personal use"],
+>>>>>>> ac05bde066e7c465bf6cf291993fec9ae72ff6fd
     emoji: "🔉",
   },
   {
@@ -42,7 +54,11 @@ const DOWNLOAD_TIERS: DownloadTier[] = [
     price: 4.99,
     quality: "High Quality",
     description: "Generated tracks between 9MB and 20MB",
+<<<<<<< HEAD
+    features: ["WAV/FLAC", "High quality", "Professional use", "Commercial ready"],
+=======
     features: ["WAV/FLAC", "High quality", "Professional use"],
+>>>>>>> ac05bde066e7c465bf6cf291993fec9ae72ff6fd
     emoji: "🎧",
   },
   {
@@ -51,7 +67,11 @@ const DOWNLOAD_TIERS: DownloadTier[] = [
     price: 8.99,
     quality: "Ultra Quality",
     description: "High-quality track over 20MB. Perfect for deluxe or multitrack creations.",
+<<<<<<< HEAD
+    features: ["Uncompressed WAV", "Ultra quality", "Multitrack ready", "Deluxe edition", "All stems included"],
+=======
     features: ["Uncompressed WAV", "Ultra quality", "Multitrack ready", "Deluxe edition"],
+>>>>>>> ac05bde066e7c465bf6cf291993fec9ae72ff6fd
     emoji: "💽",
   },
 ]
@@ -82,6 +102,25 @@ const LICENSING_OPTIONS: LicensingOption[] = [
 ]
 
 export class PricingServiceV2 {
+<<<<<<< HEAD
+  // Calculate download price based on file size - EXACT logic from pricing guide
+  static calculateDownloadPrice(fileSizeMB: number): { tier: DownloadTier; price: number } {
+    let selectedTier: DownloadTier
+
+    // Exact pricing logic from guide with precise boundary handling
+    if (fileSizeMB <= 5.0) {
+      // Files 5MB and under get Bonus Track
+      selectedTier = DOWNLOAD_TIERS[0] // 🧪 Bonus Track - $0.99
+    } else if (fileSizeMB < 9.0) {
+      // Files over 5MB but under 9MB get Base Song
+      selectedTier = DOWNLOAD_TIERS[1] // 🔉 Base Song - $1.99 (tracks under 9MB)
+    } else if (fileSizeMB >= 9.0 && fileSizeMB <= 20.0) {
+      // Files from 9MB to 20MB (inclusive) get Premium Song
+      selectedTier = DOWNLOAD_TIERS[2] // 🎧 Premium Song - $4.99 (between 9MB and 20MB)
+    } else {
+      // Files over 20MB get Ultra Super Great Amazing Song
+      selectedTier = DOWNLOAD_TIERS[3] // 💽 Ultra Super Great Amazing Song - $8.99 (over 20MB)
+=======
   // Calculate download price based on file size
   static calculateDownloadPrice(fileSizeMB: number): { tier: DownloadTier; price: number } {
     let selectedTier = DOWNLOAD_TIERS[0] // Default to Bonus Track
@@ -95,6 +134,7 @@ export class PricingServiceV2 {
       selectedTier = DOWNLOAD_TIERS[2] // Premium Song - $4.99
     } else {
       selectedTier = DOWNLOAD_TIERS[3] // Ultra Super Great Amazing Song - $8.99
+>>>>>>> ac05bde066e7c465bf6cf291993fec9ae72ff6fd
     }
 
     return { tier: selectedTier, price: selectedTier.price }
@@ -159,17 +199,69 @@ export class PricingServiceV2 {
     return `download_${songId}_${userId}_${tierCode}_${timestamp}`
   }
 
+<<<<<<< HEAD
+  // Get tier description for UI - matches exact format from pricing guide
+=======
   // Get tier description for UI
+>>>>>>> ac05bde066e7c465bf6cf291993fec9ae72ff6fd
   static getTierDescription(tier: DownloadTier): string {
     return `${tier.emoji} ${tier.name} — $${tier.price.toFixed(2)}`
   }
 
+<<<<<<< HEAD
+  // Get full license description - matches exact format from pricing guide
+=======
   // Get full license description
+>>>>>>> ac05bde066e7c465bf6cf291993fec9ae72ff6fd
   static getFullLicenseDescription(): string {
     const fullLicense = LICENSING_OPTIONS[1]
     return `${fullLicense.emoji} Full License — $${fullLicense.price.toFixed(2)}`
   }
 
+<<<<<<< HEAD
+  // Get pricing display text exactly as in the guide
+  static getPricingDisplayText(): string[] {
+    return [
+      "🪪 Full License — $10.00",
+      "Includes 1 full license per generated track.",
+      "Once purchased, this grants you complete ownership of your track. You're free to use, modify, distribute, and monetize your music on any platform—streaming services, social media, film, games, and commercial projects. Burnt Beats retains zero rights and will never require additional payments or royalties.",
+      "",
+      "💽 Ultra Super Great Amazing Song — $8.99",
+      "High-quality track over 20MB",
+      "Perfect for deluxe or multitrack creations.",
+      "",
+      "🎧 Premium Song — $4.99",
+      "Generated tracks between 9MB and 20MB",
+      "",
+      "🔉 Base Song — $1.99",
+      "Tracks under 9MB",
+      "",
+      "🧪 Bonus Track — $0.99",
+      "Demo version with watermark overlay",
+      "Test the vibe before you commit. Perfect for previewing.",
+    ]
+  }
+
+  // Test function to demonstrate exact pricing logic with boundary cases
+  static testBoundaryLogic(): void {
+    const boundaryTests = [
+      { size: 4.99, expected: "Bonus Track" },
+      { size: 5.0, expected: "Bonus Track" },
+      { size: 5.01, expected: "Base Song" },
+      { size: 8.99, expected: "Base Song" },
+      { size: 9.0, expected: "Premium Song" },
+      { size: 9.01, expected: "Premium Song" },
+      { size: 19.99, expected: "Premium Song" },
+      { size: 20.0, expected: "Premium Song" },
+      { size: 20.01, expected: "Ultra Super Great Amazing Song" },
+    ]
+
+    console.log("=== BOUNDARY PRICING TESTS ===")
+    boundaryTests.forEach((test) => {
+      const result = this.calculateDownloadPrice(test.size)
+      const passed = result.tier.name === test.expected
+      console.log(`${test.size}MB → ${result.tier.name} (${passed ? "✅ PASS" : "❌ FAIL"})`)
+=======
   // Test function to demonstrate pricing logic
   static testPricingLogic(): void {
     const testSizes = [2.5, 7.3, 15.8, 25.4, 45.2]
@@ -183,6 +275,7 @@ export class PricingServiceV2 {
       console.log(`Tier: ${result.tier.emoji} ${result.tier.name}`)
       console.log(`Price: $${result.downloadPrice}`)
       console.log(`With License: $${resultWithLicense.totalPrice}`)
+>>>>>>> ac05bde066e7c465bf6cf291993fec9ae72ff6fd
     })
   }
 }

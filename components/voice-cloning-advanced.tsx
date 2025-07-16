@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+// Allow both default and named imports
+export { default as VoiceCloningAdvanced } from "./voice-cloning-advanced"
+=======
 "use client"
 
 import type React from "react"
@@ -475,3 +479,4 @@ export default function VoiceCloningAdvanced({ userId, userPlan, onUpgrade }: Vo
     </Card>
   )
 }
+>>>>>>> ac05bde066e7c465bf6cf291993fec9ae72ff6fd

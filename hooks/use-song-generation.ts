@@ -1,7 +1,12 @@
 "use client"
 
 import { useState, useCallback } from "react"
+<<<<<<< HEAD
+import { useMutation } from "@tanstack/react-query"
+import { useToast } from "@/hooks/use-toast"
+=======
 import { useCloudStorage } from "./use-cloud-storage"
+>>>>>>> ac05bde066e7c465bf6cf291993fec9ae72ff6fd
 
 export interface SongGenerationRequest {
   title: string
@@ -77,6 +82,23 @@ export interface GenerationProgress {
   estimatedTimeRemaining?: number
 }
 
+<<<<<<< HEAD
+export const useSongGeneration = ({ onGenerationComplete }: { onGenerationComplete: (song: any) => void }) => {
+  const [isGenerating, setIsGenerating] = useState(false)
+  const [progress, setProgress] = useState<GenerationProgress | null>(null)
+  const [error, setError] = useState<string | null>(null)
+  const [generatedSong, setGeneratedSong] = useState<any | null>(null)
+  const { toast } = useToast()
+
+  const generateSongMutation = useMutation({
+    mutationFn: async (songData: any) => {
+      setIsGenerating(true)
+      setError(null)
+      setProgress(null)
+      setGeneratedSong(null)
+
+      console.log("🎵 Starting song generation:", songData.title)
+=======
 export function useSongGeneration() {
   const [isGenerating, setIsGenerating] = useState(false)
   const [progress, setProgress] = useState<GenerationProgress | null>(null)
@@ -92,11 +114,97 @@ export function useSongGeneration() {
 
     try {
       console.log("🎵 Starting advanced song generation:", request.title)
+>>>>>>> ac05bde066e7c465bf6cf291993fec9ae72ff6fd
 
       // Stage 1: Initialize
       setProgress({
         stage: "initializing",
         progress: 5,
+<<<<<<< HEAD
+        message: "Initializing Python music21 backend...",
+        estimatedTimeRemaining: 45,
+      })
+
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+
+      // Stage 2: Music Theory Analysis
+      setProgress({
+        stage: "analyzing",
+        progress: 15,
+        message: "Analyzing lyrics and musical structure with music21...",
+        estimatedTimeRemaining: 40,
+      })
+
+      // Call Python backend for music21 analysis
+      const analysisResponse = await fetch("/api/backend/analyze-music", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          lyrics: songData.lyrics,
+          genre: songData.genre,
+          tempo: songData.tempo,
+          key: songData.key,
+          mood: songData.mood,
+        }),
+      })
+
+      if (!analysisResponse.ok) {
+        throw new Error("Music analysis failed")
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, 2000))
+
+      // Stage 3: Melody Generation with music21
+      setProgress({
+        stage: "composing",
+        progress: 30,
+        message: "Generating melody and harmony with music21...",
+        estimatedTimeRemaining: 35,
+      })
+
+      const melodyResponse = await fetch("/api/backend/generate-melody", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          genre: songData.genre,
+          mood: songData.mood,
+          tempo: songData.tempo,
+          key: songData.key,
+          complexity: songData.complexity,
+        }),
+      })
+
+      if (!melodyResponse.ok) {
+        throw new Error("Melody generation failed")
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, 3000))
+
+      // Stage 4: Voice Processing (if applicable)
+      if (songData.voiceId) {
+        setProgress({
+          stage: "voice_processing",
+          progress: 50,
+          message: "Processing voice model for singing...",
+          estimatedTimeRemaining: 25,
+        })
+
+        const voiceResponse = await fetch("/api/backend/process-voice", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            voiceId: songData.voiceId,
+            lyrics: songData.lyrics,
+            melody: "melody_data", // From previous step
+          }),
+        })
+
+        if (!voiceResponse.ok) {
+          throw new Error("Voice processing failed")
+        }
+
+        await new Promise((resolve) => setTimeout(resolve, 4000))
+=======
         message: "Initializing AI music generation...",
         estimatedTimeRemaining: 45,
       })
@@ -131,17 +239,40 @@ export function useSongGeneration() {
         })
 
         await new Promise((resolve) => setTimeout(resolve, 4000)) // Simulate voice processing
+>>>>>>> ac05bde066e7c465bf6cf291993fec9ae72ff6fd
       }
 
       // Stage 5: Audio Synthesis
       setProgress({
         stage: "synthesizing",
         progress: 70,
+<<<<<<< HEAD
+        message: "Synthesizing final audio track...",
+        estimatedTimeRemaining: 15,
+      })
+
+      const synthesisResponse = await fetch("/api/backend/synthesize-audio", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          songId: `song_${Date.now()}`,
+          includeStems: songData.includeStems,
+          qualityLevel: songData.qualityLevel,
+        }),
+      })
+
+      if (!synthesisResponse.ok) {
+        throw new Error("Audio synthesis failed")
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, 3000))
+=======
         message: "Synthesizing high-quality audio...",
         estimatedTimeRemaining: 15,
       })
 
       await new Promise((resolve) => setTimeout(resolve, 3000)) // Simulate synthesis
+>>>>>>> ac05bde066e7c465bf6cf291993fec9ae72ff6fd
 
       // Stage 6: Mastering
       setProgress({
@@ -151,7 +282,11 @@ export function useSongGeneration() {
         estimatedTimeRemaining: 8,
       })
 
+<<<<<<< HEAD
+      await new Promise((resolve) => setTimeout(resolve, 2000))
+=======
       await new Promise((resolve) => setTimeout(resolve, 2000)) // Simulate mastering
+>>>>>>> ac05bde066e7c465bf6cf291993fec9ae72ff6fd
 
       // Stage 7: Upload and Finalize
       setProgress({
@@ -161,12 +296,29 @@ export function useSongGeneration() {
         estimatedTimeRemaining: 3,
       })
 
+<<<<<<< HEAD
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+
+      // Call Python backend for real music generation
+      const response = await fetch("/api/backend/generate-song", {
+=======
       // Make API request
       const response = await fetch("/api/songs/generate", {
+>>>>>>> ac05bde066e7c465bf6cf291993fec9ae72ff6fd
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
+<<<<<<< HEAD
+        body: JSON.stringify(songData),
+      })
+
+      if (!response.ok) {
+        throw new Error("Song generation failed")
+      }
+
+      const song = await response.json()
+=======
         body: JSON.stringify({
           ...request,
           userId: "current-user-id", // In production, get from auth context
@@ -179,6 +331,7 @@ export function useSongGeneration() {
       }
 
       const result = await response.json()
+>>>>>>> ac05bde066e7c465bf6cf291993fec9ae72ff6fd
 
       // Stage 8: Complete
       setProgress({
@@ -188,6 +341,44 @@ export function useSongGeneration() {
         estimatedTimeRemaining: 0,
       })
 
+<<<<<<< HEAD
+      console.log("✅ Song generation completed:", song.songId)
+      setGeneratedSong(song)
+      return song
+    },
+    onMutate: (songData) => {
+      setGeneratingSong(songData)
+    },
+    onSuccess: (song) => {
+      onGenerationComplete(song)
+      toast({
+        title: "🎵 Song Generated Successfully!",
+        description: "Your AI-generated song is ready to play.",
+      })
+    },
+    onError: (error) => {
+      toast({
+        title: "Generation Failed",
+        description: error instanceof Error ? error.message : "Failed to generate song. Please try again.",
+        variant: "destructive",
+      })
+    },
+    onSettled: () => {
+      setGeneratingSong(null)
+      setIsGenerating(false)
+      setTimeout(() => setProgress(null), 3000)
+    },
+  })
+
+  const generateSong = useCallback(
+    (songData: any) => {
+      generateSongMutation.mutate(songData)
+    },
+    [generateSongMutation],
+  )
+
+  const getSongById = useCallback(async (songId: string): Promise<any | null> => {
+=======
       console.log("✅ Song generation completed:", result.songId)
       console.log(`📊 Quality Score: ${result.composition.qualityMetrics.overallScore}%`)
       console.log(`💰 Commercial Readiness: ${result.composition.qualityMetrics.commercialReadiness}%`)
@@ -207,6 +398,7 @@ export function useSongGeneration() {
   }, [])
 
   const getSongById = useCallback(async (songId: string): Promise<GeneratedSong | null> => {
+>>>>>>> ac05bde066e7c465bf6cf291993fec9ae72ff6fd
     try {
       const response = await fetch(`/api/songs/generate?songId=${songId}&userId=current-user-id`)
 
@@ -262,6 +454,21 @@ export function useSongGeneration() {
     return "Recommended for practice/experimentation"
   }, [])
 
+<<<<<<< HEAD
+  const [generatingSong, setGeneratingSong] = useState<any | null>(null)
+
+  return {
+    generatingSong,
+    generateSong,
+    isGenerating: generateSongMutation.isPending,
+    progress,
+    error,
+    generatedSong,
+    getSongById,
+    downloadSong,
+    getQualityDescription,
+    getCommercialReadinessDescription,
+=======
   return {
     // State
     isGenerating,
@@ -279,6 +486,7 @@ export function useSongGeneration() {
     getCommercialReadinessDescription,
 
     // Reset functions
+>>>>>>> ac05bde066e7c465bf6cf291993fec9ae72ff6fd
     clearError: () => setError(null),
     clearSong: () => setGeneratedSong(null),
   }

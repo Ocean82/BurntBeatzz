@@ -74,12 +74,16 @@ const PLAN_FEATURES = {
   },
 }
 
+<<<<<<< HEAD
+function UserPlanDisplay({ currentPlan, songsGenerated, monthlyLimit, onUpgrade }: UserPlanDisplayProps) {
+=======
 export default function UserPlanDisplay({
   currentPlan,
   songsGenerated,
   monthlyLimit,
   onUpgrade,
 }: UserPlanDisplayProps) {
+>>>>>>> ac05bde066e7c465bf6cf291993fec9ae72ff6fd
   const plan = PLAN_FEATURES[currentPlan]
   const usagePercentage = monthlyLimit > 0 ? (songsGenerated / monthlyLimit) * 100 : 0
 
@@ -161,3 +165,8 @@ export default function UserPlanDisplay({
     </Card>
   )
 }
+<<<<<<< HEAD
+
+export { UserPlanDisplay }
+=======
+>>>>>>> ac05bde066e7c465bf6cf291993fec9ae72ff6fd

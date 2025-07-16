@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+# Multi-stage build for production optimization
+=======
+>>>>>>> ac05bde066e7c465bf6cf291993fec9ae72ff6fd
 FROM node:18-alpine AS base
 
 # Install dependencies only when needed
@@ -20,14 +24,25 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
+<<<<<<< HEAD
+# Next.js collects completely anonymous telemetry data about general usage.
+ENV NEXT_TELEMETRY_DISABLED 1
+
+RUN npm run build
+=======
 # Build the application
 RUN yarn build
+>>>>>>> ac05bde066e7c465bf6cf291993fec9ae72ff6fd
 
 # Production image, copy all the files and run next
 FROM base AS runner
 WORKDIR /app
 
 ENV NODE_ENV production
+<<<<<<< HEAD
+ENV NEXT_TELEMETRY_DISABLED 1
+=======
+>>>>>>> ac05bde066e7c465bf6cf291993fec9ae72ff6fd
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
@@ -49,4 +64,11 @@ EXPOSE 3000
 ENV PORT 3000
 ENV HOSTNAME "0.0.0.0"
 
+<<<<<<< HEAD
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:3000/api/health || exit 1
+
+=======
+>>>>>>> ac05bde066e7c465bf6cf291993fec9ae72ff6fd
 CMD ["node", "server.js"]

@@ -27,7 +27,11 @@ interface Track {
   userDisliked?: boolean
 }
 
+<<<<<<< HEAD
+function MusicDiscovery() {
+=======
 export default function MusicDiscovery() {
+>>>>>>> ac05bde066e7c465bf6cf291993fec9ae72ff6fd
   const [selectedGenre, setSelectedGenre] = useState("all")
   const [selectedStyle, setSelectedStyle] = useState("all")
   const [searchQuery, setSearchQuery] = useState("")
@@ -455,3 +459,8 @@ export default function MusicDiscovery() {
     </div>
   )
 }
+<<<<<<< HEAD
+
+export { MusicDiscovery }
+=======
+>>>>>>> ac05bde066e7c465bf6cf291993fec9ae72ff6fd

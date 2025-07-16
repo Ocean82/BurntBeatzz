@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+// Allow both default and named imports
+export { default as StorageManager } from "./storage-manager"
+=======
 "use client"
 
 import { useState } from "react"
@@ -188,3 +192,4 @@ export default function StorageManager({ userId }: StorageManagerProps) {
     </Card>
   )
 }
+>>>>>>> ac05bde066e7c465bf6cf291993fec9ae72ff6fd

@@ -36,10 +36,37 @@ export const users = pgTable("users", {
   songsThisMonth: integer("songs_this_month").default(0).notNull(),
   monthlyLimit: integer("monthly_limit").default(2).notNull(), // free: 2, basic: 4, pro: 50, enterprise: unlimited
   lastUsageReset: timestamp("last_usage_reset").defaultNow(),
+<<<<<<< HEAD
+  credits: integer("credits").default(0).notNull(),
+=======
+>>>>>>> ac05bde066e7c465bf6cf291993fec9ae72ff6fd
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 })
 
+<<<<<<< HEAD
+// Vocal sample bank - shared samples for all users
+export const vocalSampleBank = pgTable("vocal_sample_bank", {
+  id: serial("id").primaryKey(),
+  uploadedBy: varchar("uploaded_by").references(() => users.id),
+  anonymousName: text("anonymous_name").notNull(), // e.g., "Midnight Voice", "Golden Tone"
+  filePath: text("file_path").notNull(),
+  gsUrl: text("gs_url").notNull(),
+  publicUrl: text("public_url").notNull(),
+  duration: integer("duration"), // in seconds
+  sampleRate: integer("sample_rate").default(44100),
+  characteristics: jsonb("characteristics"), // Voice analysis data
+  isApproved: boolean("is_approved").default(false), // Admin approval required
+  isActive: boolean("is_active").default(true),
+  usageCount: integer("usage_count").default(0),
+  quality: text("quality").default("good"), // poor, good, excellent
+  tags: jsonb("tags"), // Array of tags like ["male", "deep", "rock"]
+  createdAt: timestamp("created_at").defaultNow(),
+  approvedAt: timestamp("approved_at"),
+})
+
+=======
+>>>>>>> ac05bde066e7c465bf6cf291993fec9ae72ff6fd
 export const voiceSamples = pgTable("voice_samples", {
   id: serial("id").primaryKey(),
   userId: varchar("user_id").references(() => users.id),
@@ -48,6 +75,10 @@ export const voiceSamples = pgTable("voice_samples", {
   duration: integer("duration"), // in seconds
   voiceType: text("voice_type").notNull().default("custom"), // custom, text-reader
   isProcessed: boolean("is_processed").default(false),
+<<<<<<< HEAD
+  submittedToBank: boolean("submitted_to_bank").default(false), // Track if submitted to shared bank
+=======
+>>>>>>> ac05bde066e7c465bf6cf291993fec9ae72ff6fd
   createdAt: timestamp("created_at").defaultNow(),
 })
 
@@ -64,6 +95,10 @@ export const songs = pgTable("songs", {
   tempo: integer("tempo").notNull(),
   songLength: text("song_length").notNull(),
   voiceSampleId: integer("voice_sample_id").references(() => voiceSamples.id),
+<<<<<<< HEAD
+  bankVoiceId: integer("bank_voice_id").references(() => vocalSampleBank.id), // Reference to shared bank
+=======
+>>>>>>> ac05bde066e7c465bf6cf291993fec9ae72ff6fd
   generatedAudioPath: text("generated_audio_path"),
   status: text("status").notNull().default("pending"), // pending, generating, completed, failed
   generationProgress: integer("generation_progress").default(0),
@@ -105,8 +140,23 @@ export const insertSongSchema = createInsertSchema(songs).omit({
   updatedAt: true,
 })
 
+<<<<<<< HEAD
+export const insertVocalBankSchema = createInsertSchema(vocalSampleBank).omit({
+  id: true,
+  createdAt: true,
+  approvedAt: true,
+})
+
+=======
+>>>>>>> ac05bde066e7c465bf6cf291993fec9ae72ff6fd
 export type InsertVoiceSample = z.infer<typeof insertVoiceSampleSchema>
 export type VoiceSample = typeof voiceSamples.$inferSelect
 
 export type InsertSong = z.infer<typeof insertSongSchema>
 export type Song = typeof songs.$inferSelect
+<<<<<<< HEAD
+
+export type InsertVocalBank = z.infer<typeof insertVocalBankSchema>
+export type VocalBankSample = typeof vocalSampleBank.$inferSelect
+=======
+>>>>>>> ac05bde066e7c465bf6cf291993fec9ae72ff6fd
