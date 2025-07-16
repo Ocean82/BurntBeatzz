@@ -1,4 +1,18 @@
 
+const audio = formData.get("audio") as File;
+const audio = formData.get("audio") as File;
+const allowedTypes = ["audio/wav", "audio/mp3", "audio/mpeg", "audio/webm", "audio/ogg", "audio/m4a"];
+if (audio.size > 50 * 1024 * 1024) {
+  // 50MB limit
+  return NextResponse.json({ error: "Audio file too large. Maximum 50MB" }, { status: 400 });
+}
+const audio = formData.get("audio") as File;
+const allowedTypes = ["audio/wav", "audio/mp3", "audio/mpeg", "audio/webm", "audio/ogg", "audio/m4a"];
+const allowedTypes = ["audio/wav", "audio/mp3", "audio/mpeg", "audio/webm", "audio/ogg", "audio/m4a"];
+if (audio.size > 50 * 1024 * 1024) {
+  // 50MB limit
+  return NextResponse.json({ error: "Audio file too large. Maximum 50MB" }, { status: 400 });
+}
 =======
 >>>>>>> ac05bde066e7c465bf6cf291993fec9ae72ff6fd
 
