@@ -1,10 +1,12 @@
-import { type NextRequest, NextResponse } from "next/server"
-<<<<<<< HEAD
-import { AudioSynthesisService } from "@/lib/services/audio-synthesis-service"
-import { VocalSynthesisService } from "@/lib/services/vocal-synthesis-service"
+import { AIMusicServiceV2 } from "@/lib/services/ai-music-service-v2"
+import { cloudStorage } from "@/lib/services/google-cloud-storage"
+import { requireAuth } from "@/lib/auth/stack-auth"
 
 export async function POST(request: NextRequest) {
   try {
+    // Authenticate user
+    const user = await requireAuth(request)
+
 =======
 import { AIMusicServiceV2 } from "@/lib/services/ai-music-service-v2"
 import { cloudStorage } from "@/lib/services/google-cloud-storage"
@@ -23,68 +25,39 @@ export async function POST(request: NextRequest) {
     }
 
 <<<<<<< HEAD
-    // Validate required fields
-    const requiredFields = ["title", "lyrics", "genre", "tempo"]
-    for (const field of requiredFields) {
-      if (!songData[field]) {
-        return NextResponse.json({ error: `${field} is required` }, { status: 400 })
-      }
-    }
-
-    // Validate tempo range
-    if (songData.tempo < 60 || songData.tempo > 200) {
-      return NextResponse.json({ error: "Tempo must be between 60 and 200 BPM" }, { status: 400 })
-    }
-
-    const songId = `song_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-
-    console.log(`🎵 Generating song: ${songData.title}`)
-
-    // Generate instrumental track
-    const instrumentalAudio = await AudioSynthesisService.generateInstrumental({
+    // Generate music with real AI
+    const generationResult = await AIMusicServiceV2.generateMusic({
+      lyrics: songData.lyrics,
       genre: songData.genre,
+      style: songData.vocalStyle,
       tempo: songData.tempo,
-      key: songData.key || "C",
-      duration: parseDuration(songData.songLength || "3:00"),
-      structure: songData.structure || "verse-chorus-verse-chorus-bridge-chorus",
+      duration: songData.songLength,
+      voiceId: songData.voiceId,
+      title: songData.title,
+      userId: user.id,
+      provider: songData.provider || "suno",
     })
 
-    let finalAudio = instrumentalAudio
-    let vocalInfo = null
+    const songId = `song_${user.id}_${Date.now()}`
 
-    // Add vocals if voice ID provided
-    if (songData.voiceId && songData.lyrics) {
-      console.log(`🎤 Adding vocals with voice: ${songData.voiceId}`)
+    // Upload different quality versions to Google Cloud
+    const qualityVersions = await cloudStorage.uploadMultipleQualities(
+      generationResult.audioBuffer,
+      user.id,
+      songId,
+      songData.title || "untitled",
+    )
 
-      const vocalAudio = await VocalSynthesisService.synthesizeVocals({
-        text: songData.lyrics,
-        voiceId: songData.voiceId,
-        tempo: songData.tempo,
-        genre: songData.genre,
-        duration: parseDuration(songData.songLength || "3:00"),
-      })
-
-      // Mix vocals with instrumental
-      finalAudio = await AudioSynthesisService.mixAudio(instrumentalAudio, vocalAudio)
-
-      vocalInfo = {
-        voiceId: songData.voiceId,
-        quality: 85 + Math.random() * 15,
-        processing: "completed",
-      }
+    // Upload stems if available
+    let stems = {}
+    if (generationResult.stems) {
+      stems = await cloudStorage.uploadSongStems(generationResult.stems, user.id, songId)
     }
-
-    // Calculate file size and pricing
-    const audioBuffer = finalAudio
-    const fileSizeMB = audioBuffer.length / (1024 * 1024)
-
-    // Generate different quality versions
-    const qualityVersions = await generateQualityVersions(audioBuffer, songId)
 
     // Create song record
     const song = {
       id: songId,
-      userId: songData.userId || "anonymous",
+      userId: user.id,
 =======
     // Generate music with real AI
     const generationResult = await AIMusicServiceV2.generateMusic({

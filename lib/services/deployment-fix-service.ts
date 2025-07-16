@@ -27,9 +27,7 @@ export class DeploymentFixService {
       conflicts.push("bun-types requires @types/react ^19 but project uses ^18")
     }
 
-    if (packageJson.dependencies?.["react-native"]) {
-      conflicts.push("react-native may conflict with Next.js React version")
-    }
+
 
     return conflicts
   }

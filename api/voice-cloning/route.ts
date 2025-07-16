@@ -1,6 +1,4 @@
-import { type NextRequest, NextResponse } from "next/server"
-<<<<<<< HEAD
-import { VocalSynthesisService } from "@/lib/services/vocal-synthesis-service"
+
 =======
 >>>>>>> ac05bde066e7c465bf6cf291993fec9ae72ff6fd
 

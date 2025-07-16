@@ -34,7 +34,7 @@ export class AudioSynthesisService {
   ]
 
   // Convert note name to frequency
-  private static noteToFrequency(note: string, key: string): number {
+  private static noteToFrequency(note: string, key?: string): number {
     const noteMap: Record<string, number> = {
       C2: 65.41,
       D2: 73.42,
@@ -96,66 +96,6 @@ export class AudioSynthesisService {
       }
 
       currentTime += noteInfo.duration
-    }
-
-    return buffer
-  }
-
-  // Generate genre-specific versions
-  static async generateGenreVersion(genre: string): Promise<AudioBuffer> {
-    const baseBuffer = await this.generateBasicMelody()
-    const context = this.getAudioContext()
-    const buffer = context.createBuffer(baseBuffer.numberOfChannels, baseBuffer.length, baseBuffer.sampleRate)
-    const sourceData = baseBuffer.getChannelData(0)
-    const outputData = buffer.getChannelData(0)
-
-    for (let i = 0; i < sourceData.length; i++) {
-      const t = i / baseBuffer.sampleRate
-      let sample = sourceData[i]
-
-      switch (genre.toLowerCase()) {
-        case "rock":
-          // Add distortion and power
-          sample = Math.tanh(sample * 3) * 0.8
-          // Add some harmonics
-          sample += Math.sin(2 * Math.PI * 880 * t) * sample * 0.2
-          break
-
-        case "jazz":
-          // Add swing rhythm and blue notes
-          const swingMod = 1 + Math.sin(2 * Math.PI * 2 * t) * 0.1
-          sample *= swingMod
-          // Add seventh harmonics
-          sample += Math.sin(2 * Math.PI * 330 * t) * sample * 0.15
-          break
-
-        case "electronic":
-          // Add synthesizer-like effects
-          sample = Math.sign(sample) * Math.pow(Math.abs(sample), 0.7)
-          // Add filter sweep
-          const filterMod = 0.5 + 0.5 * Math.sin(2 * Math.PI * 0.5 * t)
-          sample *= filterMod
-          break
-
-        case "country":
-          // Add twang and simplicity
-          sample *= 0.9
-          // Add slight chorus effect
-          const delayedSample = i > 1000 ? sourceData[i - 1000] * 0.3 : 0
-          sample += delayedSample
-          break
-
-        case "pop":
-          // Clean, polished sound
-          sample = Math.tanh(sample * 1.2) * 0.9
-          break
-
-        default:
-          // Keep original
-          break
-      }
-
-      outputData[i] = Math.max(-1, Math.min(1, sample))
     }
 
     return buffer
