@@ -469,10 +469,9 @@ export class CreditIntegrationService {
         },
       })
 
-      return transactions.reduce((total, txn) => total + Math.max(0, txn.amount), 0)
+      return transactions.reduce((total: number, txn: { amount: number }) => total + Math.max(0, txn.amount), 0)
     } catch (error) {
       console.error("Error getting today's earned credits:", error)
-      return todayTransactions.reduce((sum: number, txn: { amount: number }) => sum + txn.amount, 0)
       return 0
     }
   }

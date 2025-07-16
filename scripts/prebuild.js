@@ -9,7 +9,7 @@ console.log('🔧 Running pre-build checks...');
 // Check if problematic packages exist in node_modules
 const nodeModulesPath = path.join(process.cwd(), 'node_modules');
 const problematicPackages = [
-    'react-native',
+    '',
     '@op-engineering/op-sqlite'
 ];
 

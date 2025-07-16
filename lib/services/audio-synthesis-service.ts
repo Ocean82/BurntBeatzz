@@ -34,7 +34,7 @@ export class AudioSynthesisService {
   ]
 
   // Convert note name to frequency
-  private static noteToFrequency(note: string): number {
+  private static noteToFrequency(note: string, key: string): number {
     const noteMap: Record<string, number> = {
       C2: 65.41,
       D2: 73.42,
