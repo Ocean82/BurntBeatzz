@@ -56,7 +56,7 @@ export class CreditIntegrationService {
         return
       }
 
-      const winners = topSongs.map((song, index) => ({
+      const winners = topSongs.map((song: any, index: number) => ({
         userId: song.userId,
         songId: song.id,
         rank: index + 1,
@@ -453,28 +453,26 @@ export class CreditIntegrationService {
     }
   }
 
-  // Get today's earned credits (for daily limit)
+  // Check if user has reached the credit cap
   private static async getTodayEarnedCredits(userId: string): Promise<number> {
     try {
       const today = new Date()
       today.setHours(0, 0, 0, 0)
-      const tomorrow = new Date(today)
-      tomorrow.setDate(tomorrow.getDate() + 1)
 
-      const todayTransactions = await db.creditTransactions.findMany({
+      const transactions = await db.creditTransactions.findMany({
         where: {
           userId,
           type: "earned",
           timestamp: {
             gte: today.toISOString(),
-            lt: tomorrow.toISOString(),
           },
         },
       })
 
-      return todayTransactions.reduce((sum, txn) => sum + txn.amount, 0)
+      return transactions.reduce((total, txn) => total + Math.max(0, txn.amount), 0)
     } catch (error) {
       console.error("Error getting today's earned credits:", error)
+      return todayTransactions.reduce((sum: number, txn: { amount: number }) => sum + txn.amount, 0)
       return 0
     }
   }
@@ -483,7 +481,7 @@ export class CreditIntegrationService {
   static async isAtCreditCap(userId: string): Promise<boolean> {
     try {
       const balance = await this.getCreditBalance(userId)
-      return balance.availableCredits >= this.CREDIT_SETTINGS.maxCreditsPerUser
+      return balance.totalCredits >= this.CREDIT_SETTINGS.maxCreditsPerUser
     } catch (error) {
       console.error("Error checking credit cap:", error)
       return false
@@ -493,53 +491,66 @@ export class CreditIntegrationService {
   // Get current contest cycle
   static async getCurrentContestCycle(): Promise<ContestCycle | null> {
     try {
-      const now = new Date()
-      const currentMonth = now.getMonth()
-      const currentYear = now.getFullYear()
+      const currentDate = new Date().toISOString()
 
-      const startDate = new Date(currentYear, currentMonth, 1)
-      const endDate = new Date(currentYear, currentMonth + 1, 0, 23, 59, 59)
-
-      const contestId = `contest_${currentYear}_${currentMonth + 1}`
-
-      let contest = await db.contestCycles.findUnique({
-        where: { id: contestId },
+      // First check for active contests
+      const activeContest = await db.contestCycles.findFirst({
+        where: {
+          status: "active",
+          startDate: { lte: currentDate },
+          endDate: { gte: currentDate },
+        },
       })
 
-      if (!contest) {
-        contest = await db.contestCycles.create({
-          data: {
-            id: contestId,
-            startDate: startDate.toISOString(),
-            endDate: endDate.toISOString(),
-            status: now >= startDate && now <= endDate ? "active" : "upcoming",
-            totalPrizePool: 0,
-            participantCount: 0,
-            winnersAnnounced: false,
-            resetDate: endDate.toISOString(),
-          },
-        })
+      if (activeContest) {
+        return activeContest as ContestCycle
       }
 
-      return contest
+      // Then check for ended contests that haven't been processed
+      const endedContest = await db.contestCycles.findFirst({
+        where: {
+          status: "ended",
+          winnersAnnounced: false,
+          endDate: { lte: currentDate },
+        },
+        orderBy: { endDate: "desc" },
+      })
+
+      if (endedContest) {
+        return endedContest as ContestCycle
+      }
+
+      // Finally check for upcoming contests
+      const upcomingContest = await db.contestCycles.findFirst({
+        where: {
+          status: "upcoming",
+          startDate: { gte: currentDate },
+        },
+        orderBy: { startDate: "asc" },
+      })
+
+      return upcomingContest as ContestCycle | null
     } catch (error) {
       console.error("Error getting current contest cycle:", error)
       return null
     }
   }
 
-  // Send credit notification
+  // Send notification about credit changes
   private static async sendCreditNotification(userId: string, amount: number, reason: string): Promise<void> {
     try {
-      console.log(`📧 Sending credit notification to ${userId}: ${amount} credits for ${reason}`)
-      // Implementation would send actual email/push notification
+      await db.notifications.create({
+        data: {
+          userId,
+          type: "credit_update",
+          title: `${amount > 0 ? "+" : ""}${amount} Credits`,
+          message: reason,
+          read: false,
+          createdAt: new Date(),
+        },
+      })
     } catch (error) {
       console.error("Error sending credit notification:", error)
     }
-  }
-
-  // Get credit settings
-  static getCreditSettings(): CreditSettings {
-    return this.CREDIT_SETTINGS
   }
 }

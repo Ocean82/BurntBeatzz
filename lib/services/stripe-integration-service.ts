@@ -236,7 +236,7 @@ export class StripeIntegrationService {
           status: subscription.status,
           current_period_start: subscription.current_period_start,
           current_period_end: subscription.current_period_end,
-          items: subscription.items.data.map((item) => ({
+          items: subscription.items.data.map((item: any) => ({
             id: item.id,
             price: {
               id: item.price.id,
@@ -268,7 +268,7 @@ export class StripeIntegrationService {
           status: subscription.status,
           current_period_start: subscription.current_period_start,
           current_period_end: subscription.current_period_end,
-          items: subscription.items.data.map((item) => ({
+          items: subscription.items.data.map((item: any) => ({
             id: item.id,
             price: {
               id: item.price.id,
@@ -299,7 +299,7 @@ export class StripeIntegrationService {
           status: subscription.status,
           current_period_start: subscription.current_period_start,
           current_period_end: subscription.current_period_end,
-          items: subscription.items.data.map((item) => ({
+          items: subscription.items.data.map((item: any) => ({
             id: item.id,
             price: {
               id: item.price.id,
