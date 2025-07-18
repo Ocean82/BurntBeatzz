@@ -193,7 +193,7 @@ export default function StorageManager({ userId }: StorageManagerProps) {
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, , CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
 import { Cloud, HardDrive, Upload, Download, Trash2, Eye, Music, Mic, Database, Shield } from "lucide-react"
@@ -337,11 +337,11 @@ export default function StorageManager({ userId }: StorageManagerProps) {
                   </div>
                 </div>
               )) || (
-                <div className="text-center py-8 text-green-400/60">
-                  <Cloud className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                  <p>No files uploaded yet</p>
-                </div>
-              )}
+                  <div className="text-center py-8 text-green-400/60">
+                    <Cloud className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                    <p>No files uploaded yet</p>
+                  </div>
+                )}
             </div>
           )}
         </div>
