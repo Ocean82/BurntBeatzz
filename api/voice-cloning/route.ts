@@ -1,20 +1,4 @@
-
-const audio = formData.get("audio") as File;
-const audio = formData.get("audio") as File;
-const allowedTypes = ["audio/wav", "audio/mp3", "audio/mpeg", "audio/webm", "audio/ogg", "audio/m4a"];
-if (audio.size > 50 * 1024 * 1024) {
-  // 50MB limit
-  return NextResponse.json({ error: "Audio file too large. Maximum 50MB" }, { status: 400 });
-}
-const audio = formData.get("audio") as File;
-const allowedTypes = ["audio/wav", "audio/mp3", "audio/mpeg", "audio/webm", "audio/ogg", "audio/m4a"];
-const allowedTypes = ["audio/wav", "audio/mp3", "audio/mpeg", "audio/webm", "audio/ogg", "audio/m4a"];
-if (audio.size > 50 * 1024 * 1024) {
-  // 50MB limit
-  return NextResponse.json({ error: "Audio file too large. Maximum 50MB" }, { status: 400 });
-}
-=======
->>>>>>> ac05bde066e7c465bf6cf291993fec9ae72ff6fd
+import { NextRequest, NextResponse } from "next/server"
 
 // Voice Cloning API Routes
 export async function POST(request: NextRequest) {
@@ -29,14 +13,19 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Audio file or URL required" }, { status: 400 })
     }
 
-<<<<<<< HEAD
     // Validate audio file
     if (audio) {
-      const allowedTypes = ["audio/wav", "audio/mp3", "audio/mpeg", "audio/webm", "audio/ogg", "audio/m4a"]
+      const allowedTypes = [
+        "audio/wav",
+        "audio/mp3",
+        "audio/mpeg",
+        "audio/webm",
+        "audio/ogg",
+        "audio/m4a",
+      ]
       if (!allowedTypes.includes(audio.type)) {
         return NextResponse.json({ error: "Invalid audio format. Use WAV, MP3, M4A, or WebM" }, { status: 400 })
       }
-
       if (audio.size > 50 * 1024 * 1024) {
         // 50MB limit
         return NextResponse.json({ error: "Audio file too large. Maximum 50MB" }, { status: 400 })
@@ -46,9 +35,6 @@ export async function POST(request: NextRequest) {
     console.log(`🎤 Processing voice cloning for: ${name}`)
 
     // Process voice cloning
-=======
-    // Simulate voice cloning process
->>>>>>> ac05bde066e7c465bf6cf291993fec9ae72ff6fd
     const voiceClone = await processVoiceCloning({
       audio,
       name,
@@ -92,36 +78,32 @@ async function processVoiceCloning({
   makePublic: boolean
   userId: string
 }) {
-<<<<<<< HEAD
-  console.log(`🔬 Analyzing voice characteristics for: ${name}`)
+  // Simulate processing time
+  await new Promise((resolve) => setTimeout(resolve, 1500))
 
-  // Convert file to blob for processing
-  const audioBlob = new Blob([await audio.arrayBuffer()], { type: audio.type })
-
-  // Analyze voice characteristics
-  const characteristics = await analyzeVoiceCharacteristics(audioBlob)
-
-  console.log(`🎵 Generating Star Spangled Banner version for: ${name}`)
-
-  // Generate Star Spangled Banner version using the cloned voice
-  const clonedAudioUrl = await VocalSynthesisService.cloneVoiceToStarSpangledBanner(audioBlob, name, characteristics)
+  // Simulate voice characteristics
+  const characteristics = await analyzeVoiceCharacteristics(audio)
 
   const voiceId = `voice_${userId}_${Date.now()}`
+
+  // Simulate audio URL (in production, generate and store the file)
+  const audioUrl = `/api/voices/${voiceId}/sample`
+  const anthemUrl = `/api/voices/${voiceId}/anthem`
 
   // Create voice record
   const voiceRecord = {
     id: voiceId,
     userId,
     name,
-    audioUrl: clonedAudioUrl, // Star Spangled Banner version
-    anthemUrl: clonedAudioUrl, // Same as audioUrl since it's already Star Spangled Banner
+    audioUrl,
+    anthemUrl,
     isPublic: makePublic,
     characteristics,
     createdAt: new Date(),
     status: "completed",
     quality: calculateQuality(characteristics),
     originalFileSize: audio.size,
-    clonedFileSize: await estimateClonedFileSize(clonedAudioUrl),
+    clonedFileSize: Math.round(audio.size * 1.1), // Simulate cloned file size
   }
 
   console.log(`✅ Voice cloning completed for: ${name}`)
@@ -130,12 +112,12 @@ async function processVoiceCloning({
 }
 
 // Analyze voice characteristics from audio
-async function analyzeVoiceCharacteristics(audioBlob: Blob) {
+async function analyzeVoiceCharacteristics(audio: File) {
   // Simulate voice analysis - in production, use actual audio analysis
   console.log("🔍 Analyzing voice characteristics...")
 
   // Simulate processing time
-  await new Promise((resolve) => setTimeout(resolve, 1500))
+  await new Promise((resolve) => setTimeout(resolve, 1000))
 
   // Generate realistic voice characteristics
   const fundamentalFreq = 150 + Math.random() * 150 // 150-300 Hz range
@@ -145,7 +127,11 @@ async function analyzeVoiceCharacteristics(audioBlob: Blob) {
 
   const characteristics = {
     pitchRange: [fundamentalFreq - 30, fundamentalFreq + 50] as [number, number],
-    timbre: ["warm", "bright", "deep", "light"][Math.floor(Math.random() * 4)] as "warm" | "bright" | "deep" | "light",
+    timbre: ["warm", "bright", "deep", "light"][Math.floor(Math.random() * 4)] as
+      | "warm"
+      | "bright"
+      | "deep"
+      | "light",
     clarity,
     stability,
     breathiness,
@@ -168,61 +154,26 @@ async function analyzeVoiceCharacteristics(audioBlob: Blob) {
 function calculateQuality(characteristics: any): number {
   const clarityScore = characteristics.clarity * 30
   const stabilityScore = characteristics.stability * 25
-  const timbreScore = characteristics.timbre === "warm" ? 25 : characteristics.timbre === "bright" ? 20 : 15
+  const timbreScore =
+    characteristics.timbre === "warm"
+      ? 25
+      : characteristics.timbre === "bright"
+      ? 20
+      : 15
   const rangeScore = Math.min(20, (characteristics.pitchRange[1] - characteristics.pitchRange[0]) / 5)
 
   return Math.round(clarityScore + stabilityScore + timbreScore + rangeScore)
 }
 
-// Estimate cloned file size
-async function estimateClonedFileSize(audioUrl: string): Promise<number> {
-  try {
-    const response = await fetch(audioUrl)
-    const blob = await response.blob()
-    return blob.size
-  } catch (error) {
-    console.error("Could not estimate file size:", error)
-    return 1024 * 1024 // 1MB default
-=======
-  // Simulate processing time
-  await new Promise((resolve) => setTimeout(resolve, 3000))
-
-  const voiceId = `voice_${userId}_${Date.now()}`
-
-  return {
-    id: voiceId,
-    userId,
-    name,
-    audioUrl: `/api/voices/${voiceId}/sample`,
-    anthemUrl: `/api/voices/${voiceId}/anthem`,
-    isPublic: makePublic,
-    characteristics: {
-      pitchRange: [180, 280],
-      timbre: "warm",
-      clarity: 0.85,
-      stability: 0.9,
-      genreSuitability: {
-        pop: 0.92,
-        rock: 0.85,
-        jazz: 0.88,
-        classical: 0.78,
-      },
-    },
-    createdAt: new Date(),
->>>>>>> ac05bde066e7c465bf6cf291993fec9ae72ff6fd
-  }
-}
-
 // Get available voices function
 async function getAvailableVoices(userId: string) {
-<<<<<<< HEAD
   // Return preset voices that are always available
   const publicVoices = [
     {
       id: "voice_emma_preset",
       userId: "system",
       name: "Emma",
-      audioUrl: "", // Will be generated by VocalSynthesisService
+      audioUrl: "",
       anthemUrl: "",
       isPublic: true,
       characteristics: {
@@ -335,61 +286,12 @@ async function getAvailableVoices(userId: string) {
         breathiness: 0.08,
       },
       quality: 90,
-=======
-  // Mock implementation - in production this would query your database
-  const publicVoices = [
-    {
-      id: "voice_public_1",
-      userId: "system",
-      name: "Default Male Voice",
-      audioUrl: "/api/voices/public/male_sample",
-      anthemUrl: "/api/voices/public/male_anthem",
-      isPublic: true,
-      characteristics: {
-        pitchRange: [85, 180],
-        timbre: "deep",
-        clarity: 0.9,
-      },
-      createdAt: new Date("2023-01-01"),
-    },
-    {
-      id: "voice_public_2",
-      userId: "system",
-      name: "Default Female Voice",
-      audioUrl: "/api/voices/public/female_sample",
-      anthemUrl: "/api/voices/public/female_anthem",
-      isPublic: true,
-      characteristics: {
-        pitchRange: [165, 300],
-        timbre: "bright",
-        clarity: 0.95,
-      },
->>>>>>> ac05bde066e7c465bf6cf291993fec9ae72ff6fd
       createdAt: new Date("2023-01-01"),
     },
   ]
 
-<<<<<<< HEAD
   // In production, also fetch user's custom cloned voices from database
   const userVoices: any[] = []
-=======
-  const userVoices = [
-    {
-      id: `voice_user_${userId}_1`,
-      userId,
-      name: "My Cloned Voice",
-      audioUrl: `/api/voices/user/${userId}/sample_1`,
-      anthemUrl: `/api/voices/user/${userId}/anthem_1`,
-      isPublic: false,
-      characteristics: {
-        pitchRange: [180, 280],
-        timbre: "warm",
-        clarity: 0.85,
-      },
-      createdAt: new Date(),
-    },
-  ]
->>>>>>> ac05bde066e7c465bf6cf291993fec9ae72ff6fd
 
   return [...publicVoices, ...userVoices]
 }

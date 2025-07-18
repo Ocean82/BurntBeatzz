@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { spawn } from "child_process"
 import path from "path"
-import { writeFile } from "fs/promises"
+import { writeFile, mkdir } from "fs/promises"
 
 export async function POST(request: NextRequest) {
   try {
@@ -18,7 +18,10 @@ export async function POST(request: NextRequest) {
 
     // Save uploaded audio file temporarily
     const audioBuffer = await audioFile.arrayBuffer()
-    const tempAudioPath = path.join(process.cwd(), "temp", `${Date.now()}_${audioFile.name}`)
+    const tempDir = path.join(process.cwd(), "temp")
+    // Ensure temp directory exists
+    await mkdir(tempDir, { recursive: true })
+    const tempAudioPath = path.join(tempDir, `${Date.now()}_${audioFile.name}`)
     await writeFile(tempAudioPath, Buffer.from(audioBuffer))
 
     // Call Python voice cloning service
@@ -67,6 +70,8 @@ export async function POST(request: NextRequest) {
     })
 
     console.log("✅ Voice model created successfully")
+    // Clean up temp audio file
+    try { await import('fs').then(fs => fs.unlinkSync(tempAudioPath)) } catch (e) { /* ignore */ }
     return NextResponse.json(result)
   } catch (error) {
     console.error("❌ Voice model creation failed:", error)
